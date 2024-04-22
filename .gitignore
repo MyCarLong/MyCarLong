@@ -1,0 +1,80 @@
+# IDE 설정 폴더 (공통)
+.idea/
+.metadata/
+.vscode/
+.gradle/
+
+application-API-KEY.properties
+application.properties
+# IDE 설정 폴더 (STS)
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+bin/
+
+# IDE 설정 폴더 (IntelliJ IDEA)
+*.iws
+*.iml
+*.ipr
+out/
+
+# IDE 설정 폴더 (NetBeans)
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+# IDE 설정 폴더 (VS Code)
+.vscode/*
+settings.json
+keybindings.json
+tasks.json
+launch.json
+extensions.json
+code-workspace/*
+
+# IDE 설정 폴더 (Eclipse)
+.settings/
+.metadata/.plugins/org.eclipse.core.resources.workspace
+.project/*
+.classpath
+.factorypath
+
+# 빌드/임시 폴더
+build/
+out/
+temp/
+
+# 로그 파일
+target/
+logs/
+*.log
+
+# IDE 캐시
+~/.gradle/
+~/.m2/
+~/.eclipse
+~/.intellijidea/
+.idea/workspace.xml
+.idea/caches/
+.metadata/.plugins/org.eclipse.core.resources.workspace
+
+# 빌드 파일
+target/*.jar
+*.iml
+*.class
+*.war
+
+# Node.js 모듈 캐시
+node_modules/
+
+# 기타 잡다한 폴더
+bin/
+lib/
+docs/
+venv/
