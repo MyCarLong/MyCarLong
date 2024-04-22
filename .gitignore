@@ -3,6 +3,8 @@
 .metadata/
 .vscode/
 .gradle/
+HELP.md
+ReadMe.md
 
 application-API-KEY.properties
 application.properties

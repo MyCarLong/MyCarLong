@@ -1,11 +1,13 @@
 <!DOCTYPE html>
-<html lang="en"
-      xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layouts/layout1}">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 
-<div layout:fragment="content">
+<head>
+    <meta charset="UTF-8">
+    <title>Thymeleaf Example</title>
+</head>
 
-    <h1>메인페이지입니다.</h1>
+<body>
+<h1 th:text="'Hello, Thymeleaf!'"></h1>
+</body>
 
-</div>
+</html>
