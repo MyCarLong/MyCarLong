@@ -41,9 +41,9 @@ spring:
 #      maxFileSize: 20MB
 #      maxRequestSize: 100MB
 
-#itemImgLocation: D:/shop/item
+itemImgLocation: D:/shop/item
 
-#uploadPath: file:///D:/shop/
+uploadPath: file:///D:/shop/
 
 logging:
   level:
