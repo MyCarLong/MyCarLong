@@ -54,5 +54,12 @@ logging:
             sql: trace
 
 
+springdoc:
+  swagger-ui:
+    path: /swagger-docs
+    disable-swagger-default-url: true
+    display-request-duration: true
+
+
 
 

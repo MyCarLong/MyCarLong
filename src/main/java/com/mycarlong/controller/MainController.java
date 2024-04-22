@@ -1,22 +1,25 @@
 package com.mycarlong.controller;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 
-@Api(tags="메인 컨트롤러")
+@Tag(name = "Main", description = "Main 관련 API 입니다.")
 @RestController("/")
 public class MainController {
-    @ApiOperation(value = "메인으로 이동")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "리턴 성공",
-            content = @io.swagger.v3.oas.annotations.media.Content(mediaType = "application/json")),
-            @ApiResponse(responseCode = "500", description = "서버 에러")
-    })
+
+    @Operation(
+            summary = "Main()",
+            description = "메인페이지로 이동합니다."
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "메인페이지로 이동이 성공했습니다."
+    )
     @GetMapping("/")
     public String main(){
         return "main";
