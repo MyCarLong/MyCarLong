@@ -56,6 +56,20 @@ dependencies {
 	// https://mvnrepository.com/artifact/org.modelmapper/modelmapper
 	implementation group: 'org.modelmapper', name: 'modelmapper', version: '3.1.0'
 
+
+	/*Use by KGH*/
+	implementation 'org.apache.tika:tika-parsers:1.17'
+	/*End of Use by KGH*/
+
+
+	/*Use by HDW*/
+	//예시	implementation 'org.apache.tika:tika-parsers:1.17'
+	/*End of Use by HDW*/
+
+
+	/*Use by PHW*/
+	//예시	implementation 'org.apache.tika:tika-parsers:1.17'
+	/*End of Use by PHW*/
 }
 
 tasks.named('test') {
