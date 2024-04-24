@@ -43,7 +43,7 @@ spring:
 
 itemImgLocation: D:/shop/item
 
-uploadPath: file:///D:/shop/
+uploadPath: file:///C:/shop/
 
 logging:
   level:
