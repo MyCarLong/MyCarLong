@@ -4,5 +4,7 @@ import com.mycarlong.entity.ArticleImage;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ArticleImageRepository extends JpaRepository<ArticleImage, Long> {
-	String returnImgPath(Long articleId);  //제목으로 찾기
+//	List<ArticleImage> findByArticleId(Long article);
+//
+//	ArticleImage findByArticleIdAndImageSetNum(Long article, int imageSetNum);  //TODO: 여기서 오류 발생
 }

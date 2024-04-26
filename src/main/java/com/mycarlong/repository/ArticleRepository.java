@@ -7,13 +7,13 @@ import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import java.util.List;
 
 public interface ArticleRepository extends JpaRepository<Article, Long> , QuerydslPredicateExecutor<Article> {
-	List<Article> findByArticleNm(String ArticleNm);  //제목으로 찾기
+	List<Article> findByTitle(String title);  //제목으로 찾기
 
-	List<Article> findByArticleContent(String ArticleContent);  //제목으로 찾기
+	List<Article> findByContent(String content);  //제목으로 찾기
 
-	List<Article> findByArticleNmOrArticleContent(String ArticleNm, String content); //제목 혹은 내용으로 찾기
+	List<Article> findByTitleOrContent(String title, String content); //제목 혹은 내용으로 찾기
 
-	List<Article> findByArticleCategory(String category); //카테고리로 찾기
+	List<Article> findByCategory(String category); //카테고리로 찾기
 
 
 

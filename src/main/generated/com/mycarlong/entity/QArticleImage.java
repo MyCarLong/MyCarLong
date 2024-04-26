@@ -22,7 +22,7 @@ public class QArticleImage extends EntityPathBase<ArticleImage> {
 
     public static final QArticleImage articleImage = new QArticleImage("articleImage");
 
-    public final QArticle articleId;
+    public final QArticle article;
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
@@ -31,6 +31,8 @@ public class QArticleImage extends EntityPathBase<ArticleImage> {
     public final StringPath imageSavedName = createString("imageSavedName");
 
     public final StringPath imageSavedPath = createString("imageSavedPath");
+
+    public final NumberPath<Integer> imageSetNum = createNumber("imageSetNum", Integer.class);
 
     public QArticleImage(String variable) {
         this(ArticleImage.class, forVariable(variable), INITS);
@@ -50,7 +52,7 @@ public class QArticleImage extends EntityPathBase<ArticleImage> {
 
     public QArticleImage(Class<? extends ArticleImage> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.articleId = inits.isInitialized("articleId") ? new QArticle(forProperty("articleId")) : null;
+        this.article = inits.isInitialized("article") ? new QArticle(forProperty("article")) : null;
     }
 
 }

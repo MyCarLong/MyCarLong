@@ -4,6 +4,8 @@ server:
 spring:
   application:
     name: MyCarLong
+  config:
+    import: boardSetting.yml # custom properties add
 
 #  security:
 #    user:
@@ -41,10 +43,6 @@ spring:
 #      maxFileSize: 20MB
 #      maxRequestSize: 100MB
 
-itemImgLocation: D:/shop/item
-
-uploadPath: file:///C:/shop/
-
 logging:
   level:
     org:
@@ -53,13 +51,8 @@ logging:
           descriptor:
             sql: trace
 
-
 springdoc:
   swagger-ui:
     path: /swagger-docs
     disable-swagger-default-url: true
     display-request-duration: true
-
-
-
-

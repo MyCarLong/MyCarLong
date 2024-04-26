@@ -12,7 +12,7 @@ import lombok.*;
 @Builder
 public class ArticleImage {
 
-	@Id @Column(name = "image_id")
+	@Id @Column(name = "imageId")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
@@ -22,13 +22,27 @@ public class ArticleImage {
 
 	private String imageSavedPath;
 
+	private int imageSetNum;
+
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "article_id")
-	private Article articleId;
+	@JoinColumn(name = "article")
+	private Article article;
 
 	public void updateArticleImg(String imageOriginName, String imageSavedName, String imageSavedPath){
 		this.imageOriginName = imageOriginName;
 		this.imageSavedName = imageSavedName;
 		this.imageSavedPath = imageSavedPath;
 	}
+
+//	//articleId로 일치하는 Img 찾기
+//	public String returnImgPath (Long articleId) {
+//		String imgPath;
+//		if (this.articleId.getId().equals(articleId)) {
+//			imgPath = this.imageSavedPath + this.imageSavedName;
+//		}else {
+//			imgPath = null;
+//		}
+//		return imgPath;
+//	}
 }
+

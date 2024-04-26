@@ -24,7 +24,7 @@ import java.util.List;
 public class Article {
 
 	@Id
-	@Column(name = "article_id")
+	@Column(name = "articleId")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
@@ -47,7 +47,7 @@ public class Article {
 	private int hasImgaes;
 	private boolean hasImgaesFlag;
 
-	@OneToMany(mappedBy = "image_id" ,  cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "article" ,  cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<ArticleImage>  thisImgList;
 
 	/**

@@ -1,21 +1,14 @@
 package com.mycarlong.service;
 
+import com.mycarlong.entity.ArticleImage;
+import org.springframework.web.multipart.MultipartFile;
 
-import com.mycarlong.repository.ArticleImageRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import java.io.IOException;
+import java.util.List;
 
-@Service
-@RequiredArgsConstructor
-@Transactional
-public class ArticleImageService {
-	@Value("${uploadPath}")
-	private String articleImgLocation;
+public interface ArticleImageService {
 
-	private final ArticleImageRepository articleImageRepository;
+	void saveArticleImg(ArticleImage articleImg, List<MultipartFile> articleImgFileList) throws IOException;
 
-
-
+	void updateItemImg(Long articleImgId, List<MultipartFile> articleImgFileList) throws Exception;
 }
