@@ -5,7 +5,9 @@ spring:
   application:
     name: MyCarLong
   config:
-    import: boardSetting.yml # custom properties add
+    import:
+    - boardSetting.yml #  custom properties add
+    - S3_Setting.yml #  AWS S3 Upload setting
 
 #  security:
 #    user:

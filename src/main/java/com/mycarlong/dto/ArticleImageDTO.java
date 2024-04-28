@@ -15,6 +15,8 @@ public class ArticleImageDTO {
 
 	private static ModelMapper modelMapper = new ModelMapper();
 
+	private Long articleId;
+
 	public static ArticleImageDTO of(ArticleImage articleImg) {
 		return modelMapper.map(articleImg,ArticleImageDTO.class);
 	}

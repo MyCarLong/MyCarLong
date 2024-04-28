@@ -5,11 +5,14 @@ import com.mycarlong.utils.FileChecker;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.UUID;
 
 /**
@@ -20,15 +23,16 @@ import java.util.UUID;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class FileServiceImpl implements FileService{
 
 	private final FileChecker checker;
+	/*
+	private final AmazonS3Client amazonS3Client;  // uncommente WHEN AWS S3 FILE UPLOAD TEST
 
-	public FileServiceImpl(){
-		this.checker = new FileChecker();
-	}
-
-
+	@Value("${cloud.aws.s3.bucket}")
+	private String bucketName;
+	 */
 	@Operation(summary = "Upload a file")
 	@ApiResponses({
 			@ApiResponse(responseCode = "200", description = "File uploaded successfully"),
@@ -72,4 +76,30 @@ public class FileServiceImpl implements FileService{
 		}
 	}
 
+	@Override
+	public String uploadToS3(String upload, MultipartFile multipartFile) throws IOException {
+		return "";
+	}
+
+	@Override
+	public String modifyFileFromS3(String upload, MultipartFile multipartFile) throws IOException {
+		return "";
+	}
+
+	@Override
+	public void deleteFileFromS3(String fileName) throws IOException {
+
+	}
+
+/*
+	private static final String FILE_EXTENSION_SEPARATOR = ".";
+
+	private static String buildFileName(String category, String originalFileName) {
+		int fileExtensionIndex = originalFileName.lastIndexOf(FILE_EXTENSION_SEPARATOR);
+		String fileExtension = originalFileName.substring(fileExtensionIndex);
+		String fileName = originalFileName.substring(0, fileExtensionIndex);
+		String now = String.valueOf(System.currentTimeMillis());
+
+		return category + CATEGORY_PREFIX + fileName + TIME_SEPARATOR + now + fileExtension;
+	}*/
 }

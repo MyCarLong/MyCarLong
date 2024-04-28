@@ -21,7 +21,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Article {
+public class Article extends BaseTimeEntity {
 
 	@Id
 	@Column(name = "articleId")
@@ -49,6 +49,10 @@ public class Article {
 
 	@OneToMany(mappedBy = "article" ,  cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<ArticleImage>  thisImgList;
+
+	@OneToMany(mappedBy = "article" ,  cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<Reply> thisReplyList;
+
 
 	/**
 	 * Initializes the 'hasReplyFlag' boolean based on the 'hasReply' value.

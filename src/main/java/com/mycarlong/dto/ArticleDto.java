@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class ArticleFormDto {
+public class ArticleDto {
 
 	private Long id;
 	@NotBlank(message = "제목은 비워둘 수 없습니다.")
@@ -30,8 +30,8 @@ public class ArticleFormDto {
 	}
 
 	private static ModelMapper modelMapper = new ModelMapper();
-	public static ArticleFormDto of(Article article){
-		return modelMapper.map(article,ArticleFormDto.class);
+	public static ArticleDto of(Article article){
+		return modelMapper.map(article, ArticleDto.class);
 	}
 
 }
