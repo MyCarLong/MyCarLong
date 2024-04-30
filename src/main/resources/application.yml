@@ -45,6 +45,9 @@ itemImgLocation: D:/shop/item
 
 uploadPath: file:///D:/shop/
 
+driver:
+  chrome:
+
 logging:
   level:
     org:
