@@ -1,13 +1,12 @@
 package com.mycarlong.service;
 
 
-import io.github.bonigarcia.wdm.WebDriverManager;
+import com.mycarlong.config.CustomException;
+import com.mycarlong.dto.CarInfoDto;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
@@ -23,10 +22,13 @@ import java.util.Map;
 
 @Slf4j
 @Service
-public class SeleniumServiceImpl implements SeleniumService {
+public class SeleniumServiceImpl extends CustomException implements SeleniumService {
 	private Logger logger = LoggerFactory.getLogger(SeleniumServiceImpl.class);
-	private static final String defaultSearchURL = "https://search.naver.com/search" +
+	private static final String DEFAULT_SEARCH_URL = "https://search.naver.com/search" +
 			".naver?where=nexearch&sm=top_hty&fbm=0&ie=utf8&query=";  // 네이버 검색 기본 URL을 잡는다.
+	private static final Duration WAIT_DURATION = Duration.ofMillis(300);
+	private WebDriverService webDriverService;
+	private CustomException customException;
 
 	@Override
 	public Map<String, String> photoGet(String year, String model, WebDriver driver) {
@@ -38,11 +40,14 @@ public class SeleniumServiceImpl implements SeleniumService {
 			String imgURL = null;
 			// 웹 페이지에 연결
 			driver.get(generated.get("targetURL"));
-			WebDriverWait wait = new WebDriverWait(driver, Duration.ofMillis(300));
+			WebDriverWait wait = new WebDriverWait(driver,WAIT_DURATION);
 			WebElement element = wait.until(
 					ExpectedConditions.visibilityOfElementLocated(By.cssSelector(generated.get("selector"))));
 			logger.info("element {}", element);
 			imgURL = element.getAttribute("data-img-url");
+			if (imgURL == null) {
+				imgURL = "Info: Img URL not found";
+			}
 			logger.info("imgTag {} ", imgURL);
 
 			photoGets = new HashMap<>();
@@ -64,7 +69,7 @@ public class SeleniumServiceImpl implements SeleniumService {
 		Map<String, String> infoMap = new HashMap<>();
 		try {
 			driver.get(infoSource.get("targetURL"));
-			WebDriverWait wait = new WebDriverWait(driver, Duration.ofMillis(300));
+			WebDriverWait wait = new WebDriverWait(driver, WAIT_DURATION);
 			List<WebElement> dlElements = wait.until(
 					ExpectedConditions.visibilityOfAllElementsLocatedBy(
 							By.cssSelector(infoSource.get("selector"))));
@@ -72,6 +77,9 @@ public class SeleniumServiceImpl implements SeleniumService {
 			WebElement boxCheck = wait.until(
 					ExpectedConditions.visibilityOfElementLocated(By.cssSelector(boxCss)));
 			logger.info("boxCheck {} :" ,boxCheck.getText());
+			if (boxCheck.getText()==null) {
+				throw new TargetNotFoundException("Targeted Information Box Not Found");
+			}
 
 			infoMap.put("boxCheck", boxCheck.getText());
 //			infoMap.put("imgURL", imgURL);
@@ -91,15 +99,6 @@ public class SeleniumServiceImpl implements SeleniumService {
 			return infoMap;
 		} catch (Exception e) {
 			e.printStackTrace();
-		} finally {
-			if (driver != null) {
-				// 모든 창 및 탭을 닫습니다.
-				for (String handle : driver.getWindowHandles()) {
-					driver.switchTo().window(handle);
-					driver.close();
-				}
-				driver.quit(); // 웹 드라이버를 종료합니다.
-			}
 		}
 		return infoMap;
 	}
@@ -107,51 +106,67 @@ public class SeleniumServiceImpl implements SeleniumService {
 
 
 		@Override
-		public Map<String, Object>  mappingToJson(String year, String model) {
-			WebDriver driver = new ChromeDriver(settings());
+		public CarInfoDto  mappingToJson(String year, String model) {
+			WebDriver driver = webDriverService.getDriver();
 			Map<String , Object> beforeConv = new HashMap<>();
+			Map<String , String> parametersInfo = new HashMap<>();
+			parametersInfo.put("year", year);
+			parametersInfo.put("model", model);
+			CarInfoDto carInfoDto = new CarInfoDto();
+
+			if (!regularExp(year, model)) {
+				carInfoDto.setInformation(Map.of("ErrorInfomation", "Please Input Correct Parameters . . "));
+				carInfoDto.setParameters(parametersInfo);
+				carInfoDto.setStatus(400);
+
+			}
 			try {
 				Map<String, String> getPhoto = photoGet(year, model , driver);
 				Map<String , String> getInfo = infomationGet(year , model ,driver);
-				Map<String , String> parametersInfo = new HashMap<>();
-				parametersInfo.put("year", year);
-				parametersInfo.put("model", model);
+
 
 				if(getPhoto != null) {
-					beforeConv.put("status", 200);
-					beforeConv.put("Information", getInfo);
+//					beforeConv.put("status", 200);
+//					beforeConv.put("Information", getInfo);
+					carInfoDto.setStatus(200);
+					carInfoDto.setInformation(getInfo);
 				}
 				else if (!getInfo.get("boxCheck").contains(model)) {  //box check 결과에 parameter인 model이 없다면
-					beforeConv.put("status", 406);
-					beforeConv.put("Information", "Box Miss Matching to Parameter Model...");
-				}
-//				else if (getPhoto == null) {
-//					beforeConv.put("status", 400);
+//					beforeConv.put("status", 406);
+//					beforeConv.put("Information", "Box Miss Matching to Parameter Model...");
+					carInfoDto.setStatus(406);
+					carInfoDto.setInformation(Map.of("Information", "Box Miss Matching to Parameter Model..."));
+				}else if (getPhoto.get("imgURL").equals("Info: Img URL not found")) {
+//					beforeConv.put("status", 404);
 //					beforeConv.put("Information", "Cannot Found ImageURL");
-//				}
-				beforeConv.put("parameters", parametersInfo);
-				beforeConv.put("imgURL", getPhoto.get("imgURL"));
+					carInfoDto.setStatus(404);
+					carInfoDto.setInformation(Map.of("Information", "Cannot Found ImageURL"));
+				}
+//				beforeConv.put("parameters", parametersInfo);
+//				beforeConv.put("imgURL", getPhoto.get("imgURL"));
+//				carInfoDto.setParameters(parametersInfo);
+				carInfoDto.setImgURL(getPhoto.get("imgURL"));
 
-				return beforeConv;
+//				return beforeConv;
+				return carInfoDto;
 			} catch (Exception e) {
-				throw new RuntimeException(e);
+				throw new MergingDataException(e.getMessage());
+			}finally {
+				if (driver != null) {
+					// 모든 창 및 탭을 닫습니다.
+					webDriverService.quitDriver();
+				}
 			}
 		}
 
-	private ChromeOptions settings() {
-		// 웹 드라이버 옵션 설정
-		ChromeOptions options = new ChromeOptions();
-		options.addArguments("--remote-allow-origins=*");
-		options.addArguments("headless");
-		options.addArguments("disable-gpu");
-		options.addArguments("--no-sandbox");
-		options.addArguments("--window-size=1920,1080");
-		options.addArguments("--disable-dev-shm-usage");
 
-		// 웹 드라이버 초기화
-		WebDriverManager.chromedriver().setup();
-		return options;
+
+	private WebElement waitForElement(WebDriver driver, String targetURL, String cssSelector) {
+		driver.get(targetURL);
+		WebDriverWait wait = new WebDriverWait(driver,WAIT_DURATION);
+		return wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(cssSelector)));
 	}
+
 
 
 	private boolean regularExp(String year, String model) {
@@ -174,7 +189,7 @@ public class SeleniumServiceImpl implements SeleniumService {
 					"div.cm_content_wrap._content > div:nth-child(1) > div > div > dl";
 		}
 
-		targetURL = defaultSearchURL + year + "%20" + encodedModel + "%20" + encodedKeyword;
+		targetURL = DEFAULT_SEARCH_URL + year + "%20" + encodedModel + "%20" + encodedKeyword;
 		logger.info("target URL {}", targetURL);
 		Map<String, String> generatedSource = new HashMap<>();
 		generatedSource.put("targetURL", targetURL);
@@ -213,3 +228,7 @@ public class MappingToJsonDTO {
     // getters and setters
 }
 */
+
+/*
+* need to move Origin project  - > SeleniumServiceImpl , service interface , controller , maybe DTOs...
+* */
