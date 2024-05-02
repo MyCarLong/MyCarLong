@@ -1,14 +1,30 @@
+oauth:
+  kakao:
+    client_id: "${spring.security.oauth2.client.registration.kakao.client-id}"  # REST API 키
+    redirect_uri: "${spring.security.oauth2.client.registration.kakao.redirect-uri}"
+    client_secret: "${spring.security.oauth2.client.registration.kakao.client-secret}" # Client Secret 키
+    scope: "${spring.security.oauth2.client.registration.kakao.scope}"
+
+  naver:
+    client_id: "${spring.security.oauth2.client.registration.naver.client-id}"
+    redirect_uri: "${spring.security.oauth2.client.registration.naver.redirect-uri}"
+    client_secret: "${spring.security.oauth2.client.registration.naver.client-secret}"
+    scope: "${spring.security.oauth2.client.registration.naver.scope}"
+
+
 server:
   port: 8097
 
 spring:
   application:
     name: MyCarLong
+  config:
+    import: oauthkey.properties
 
-#  security:
-#    user:
-#      name: test@test.com
-#      password: 12345
+  security:
+    user:
+      name: test@test.com
+      password: 12345
 
   devtools:
     restart:
@@ -31,10 +47,14 @@ spring:
       hibernate:
         show_sql: true
         format_sql: true
-
+        jdbc:
+          time_zone: Asia/Seoul
     hibernate:
       ddl-auto: update
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
     database-platform: org.hibernate.dialect.MySQL8Dialect
+
 
 #  servlet:
 #    multipart:

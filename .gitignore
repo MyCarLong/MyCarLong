@@ -8,6 +8,7 @@ ReadMe.md
 
 application-API-KEY.properties
 application.properties
+
 # IDE 설정 폴더 (STS)
 .apt_generated
 .classpath
@@ -64,7 +65,6 @@ logs/
 ~/.intellijidea/
 .idea/workspace.xml
 .idea/caches/
-.metadata/.plugins/org.eclipse.core.resources.workspace
 
 # 빌드 파일
 target/*.jar
@@ -80,3 +80,6 @@ bin/
 lib/
 docs/
 venv/
+
+# properties
+oauthkey.properties

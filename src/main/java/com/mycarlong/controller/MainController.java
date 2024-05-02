@@ -1,27 +1,27 @@
 package com.mycarlong.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import java.util.TimeZone;
 
-
-@Tag(name = "Main", description = "Main 관련 API 입니다.")
-@RestController("/")
+@Controller
 public class MainController {
-
-    @Operation(
-            summary = "Main()",
-            description = "메인페이지로 이동합니다."
-    )
-    @ApiResponse(
-            responseCode = "200",
-            description = "메인페이지로 이동이 성공했습니다."
-    )
-    @GetMapping("/")
-    public String main(){
-        return "main";
+    private Logger logger = LoggerFactory.getLogger(MainController.class);
+    @PostMapping
+    public void setTimeZone() {
+        TimeZone.setDefault(TimeZone.getTimeZone("Asia/Seoul"));
     }
+
+    @RequestMapping({"/","/main"})
+    public String mainAPI(){
+        logger.info(String.valueOf(System.currentTimeMillis()));
+        logger.info(String.valueOf(System.currentTimeMillis() + 1000 * 60 * 60L));
+
+        return "index";
+    }
+
 }
