@@ -1,7 +1,4 @@
-package com.mycarlong.kakao;
-
-
-import lombok.RequiredArgsConstructor;
+package com.mycarlong.google;
 
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
@@ -11,33 +8,35 @@ import com.mycarlong.mycarlongback.oauth.OauthMember;
 import com.mycarlong.mycarlongback.oauth.OauthMemberClient;
 import com.mycarlong.mycarlongback.oauth.OauthServerType;
 
+import lombok.RequiredArgsConstructor;
+
 @Component
 @RequiredArgsConstructor
-public class KakaoMemberClient implements OauthMemberClient {
+public class GoogleMemberClient implements OauthMemberClient {
 
-    private final KakaoApiClient kakaoApiClient;
-    private final KakaoOauthConfig kakaoOauthConfig;
+    private final GoogleApiClient googleApiClient;
+    private final GoogleOauthConfig googleOauthConfig;
 
     @Override
     public OauthServerType supportServer() {
-        return OauthServerType.KAKAO;
+        return OauthServerType.GOOGLE;
     }
 
     @Override
     public OauthMember fetch(String authCode) {
-        KakaoToken tokenInfo = kakaoApiClient.fetchToken(tokenRequestParams(authCode)); // (1)
-        KakaoMemberResponse kakaoMemberResponse =
-                kakaoApiClient.fetchMember("Bearer " + tokenInfo.accessToken());  // (2)
-        return kakaoMemberResponse.toDomain();  // (3)
+        GoogleToken tokenInfo = googleApiClient.fetchToken(tokenRequestParams(authCode)); // (1)
+        GoogleMemberResponse googleMemberResponse =
+                googleApiClient.fetchMember("Bearer " + tokenInfo.accessToken());  // (2)
+        return googleMemberResponse.toDomain();  // (3)
     }
 
     private MultiValueMap<String, String> tokenRequestParams(String authCode) {
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("grant_type", "authorization_code");
-        params.add("client_id", kakaoOauthConfig.clientId());
-        params.add("redirect_uri", kakaoOauthConfig.redirectUri());
+        params.add("client_id", googleOauthConfig.clientId());
+        params.add("redirect_uri", googleOauthConfig.redirectUri());
         params.add("code", authCode);
-        params.add("client_secret", kakaoOauthConfig.clientSecret());
+        params.add("client_secret", googleOauthConfig.clientSecret());
         return params;
     }
 }

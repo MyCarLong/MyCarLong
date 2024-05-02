@@ -1,4 +1,4 @@
-package com.mycarlong.naver;
+package java.com.mycarlong.mycarlongback.naver;
 
 import java.math.BigInteger;
 import java.security.SecureRandom;

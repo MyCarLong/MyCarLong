@@ -1,4 +1,4 @@
-package com.mycarlong.naver;
+package java.com.mycarlong.mycarlongback.google;
 
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
@@ -12,32 +12,31 @@ import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
-public class NaverMemberClient implements OauthMemberClient {
+public class GoogleMemberClient implements OauthMemberClient {
 
-    private final NaverApiClient naverApiClient;
-    private final NaverOauthConfig naverOauthConfig;
+    private final GoogleApiClient googleApiClient;
+    private final GoogleOauthConfig googleOauthConfig;
 
     @Override
     public OauthServerType supportServer() {
-        return OauthServerType.NAVER;
+        return OauthServerType.GOOGLE;
     }
 
     @Override
     public OauthMember fetch(String authCode) {
-        NaverToken tokenInfo = naverApiClient.fetchToken(tokenRequestParams(authCode));
-        NaverMemberResponse naverMemberResponse = naverApiClient.fetchMember("Bearer " + tokenInfo.accessToken());
-        return naverMemberResponse.toDomain();
+        GoogleToken tokenInfo = googleApiClient.fetchToken(tokenRequestParams(authCode)); // (1)
+        GoogleMemberResponse googleMemberResponse =
+                googleApiClient.fetchMember("Bearer " + tokenInfo.accessToken());  // (2)
+        return googleMemberResponse.toDomain();  // (3)
     }
 
     private MultiValueMap<String, String> tokenRequestParams(String authCode) {
-
-
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("grant_type", "authorization_code");
-        params.add("client_id", naverOauthConfig.clientId());
-        params.add("client_secret", naverOauthConfig.clientSecret());
+        params.add("client_id", googleOauthConfig.clientId());
+        params.add("redirect_uri", googleOauthConfig.redirectUri());
         params.add("code", authCode);
-        params.add("state", naverOauthConfig.state());
+        params.add("client_secret", googleOauthConfig.clientSecret());
         return params;
     }
 }

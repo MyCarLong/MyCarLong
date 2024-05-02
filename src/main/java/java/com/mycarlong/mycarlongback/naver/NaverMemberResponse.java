@@ -1,4 +1,4 @@
-package com.mycarlong.naver;
+package java.com.mycarlong.mycarlongback.naver;
 
 import static com.mycarlong.mycarlongback.oauth.OauthServerType.NAVER;
 

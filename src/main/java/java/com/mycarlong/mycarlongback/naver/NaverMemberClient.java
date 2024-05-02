@@ -1,7 +1,4 @@
-package com.mycarlong.kakao;
-
-
-import lombok.RequiredArgsConstructor;
+package java.com.mycarlong.mycarlongback.naver;
 
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
@@ -11,33 +8,36 @@ import com.mycarlong.mycarlongback.oauth.OauthMember;
 import com.mycarlong.mycarlongback.oauth.OauthMemberClient;
 import com.mycarlong.mycarlongback.oauth.OauthServerType;
 
+import lombok.RequiredArgsConstructor;
+
 @Component
 @RequiredArgsConstructor
-public class KakaoMemberClient implements OauthMemberClient {
+public class NaverMemberClient implements OauthMemberClient {
 
-    private final KakaoApiClient kakaoApiClient;
-    private final KakaoOauthConfig kakaoOauthConfig;
+    private final NaverApiClient naverApiClient;
+    private final NaverOauthConfig naverOauthConfig;
 
     @Override
     public OauthServerType supportServer() {
-        return OauthServerType.KAKAO;
+        return OauthServerType.NAVER;
     }
 
     @Override
     public OauthMember fetch(String authCode) {
-        KakaoToken tokenInfo = kakaoApiClient.fetchToken(tokenRequestParams(authCode)); // (1)
-        KakaoMemberResponse kakaoMemberResponse =
-                kakaoApiClient.fetchMember("Bearer " + tokenInfo.accessToken());  // (2)
-        return kakaoMemberResponse.toDomain();  // (3)
+        NaverToken tokenInfo = naverApiClient.fetchToken(tokenRequestParams(authCode));
+        NaverMemberResponse naverMemberResponse = naverApiClient.fetchMember("Bearer " + tokenInfo.accessToken());
+        return naverMemberResponse.toDomain();
     }
 
     private MultiValueMap<String, String> tokenRequestParams(String authCode) {
+
+
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("grant_type", "authorization_code");
-        params.add("client_id", kakaoOauthConfig.clientId());
-        params.add("redirect_uri", kakaoOauthConfig.redirectUri());
+        params.add("client_id", naverOauthConfig.clientId());
+        params.add("client_secret", naverOauthConfig.clientSecret());
         params.add("code", authCode);
-        params.add("client_secret", kakaoOauthConfig.clientSecret());
+        params.add("state", naverOauthConfig.state());
         return params;
     }
 }

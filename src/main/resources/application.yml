@@ -10,14 +10,18 @@ oauth:
     redirect_uri: "${spring.security.oauth2.client.registration.naver.redirect-uri}"
     client_secret: "${spring.security.oauth2.client.registration.naver.client-secret}"
     scope: "${spring.security.oauth2.client.registration.naver.scope}"
-
+  
+  google:
+    client_id: "${spring.security.oauth2.client.registration.google.client-id}"
+    redirect_uri: "${spring.security.oauth2.client.registration.google.redirect-uri}"
+    client_secret: "${spring.security.oauth2.client.registration.google.client-secret}"
+    scope: "${spring.security.oauth2.client.registration.google.scope}"
 
 server:
-  port: 8097
-
+  port: 8080
 spring:
   application:
-    name: MyCarLong
+    name: mycarlong-back
   config:
     import: oauthkey.properties
 
@@ -26,21 +30,6 @@ spring:
       name: test@test.com
       password: 12345
 
-  devtools:
-    restart:
-      enabled: true
-
-  livereload:
-    enabled: true
-
-  thymeleaf:
-    cache: false
-
-  datasource: # RDS 연동시 수정해야함
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/myCarLong
-    username: root
-    password: 1234
 
   jpa:
     properties:
@@ -50,39 +39,18 @@ spring:
         jdbc:
           time_zone: Asia/Seoul
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
       naming:
-        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
-    database-platform: org.hibernate.dialect.MySQL8Dialect
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl    
 
-
-#  servlet:
-#    multipart:
-#      maxFileSize: 20MB
-#      maxRequestSize: 100MB
-
-itemImgLocation: D:/shop/item
-
-uploadPath: file:///D:/shop/
-
-driver:
-  chrome:
-
-logging:
-  level:
-    org:
-      hibernate:
-        type:
-          descriptor:
-            sql: trace
-
-
-springdoc:
-  swagger-ui:
-    path: /swagger-docs
-    disable-swagger-default-url: true
-    display-request-duration: true
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/ouath
+    username: dd2558
+    password: gkehddnjs10
 
 
 
 
+
+    

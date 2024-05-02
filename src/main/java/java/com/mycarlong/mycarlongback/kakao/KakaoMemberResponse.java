@@ -1,4 +1,4 @@
-package com.mycarlong.kakao;
+package java.com.mycarlong.mycarlongback.kakao;
 
 import static com.mycarlong.mycarlongback.oauth.OauthServerType.KAKAO;
 

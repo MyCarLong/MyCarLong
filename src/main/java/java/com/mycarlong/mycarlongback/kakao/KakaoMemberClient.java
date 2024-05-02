@@ -1,4 +1,4 @@
-package com.mycarlong.kakao;
+package java.com.mycarlong.mycarlongback.kakao;
 
 
 import lombok.RequiredArgsConstructor;
