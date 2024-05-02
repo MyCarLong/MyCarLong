@@ -3,6 +3,7 @@ package com.mycarlong.service;
 
 import com.mycarlong.config.CustomException;
 import com.mycarlong.dto.CarInfoDto;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -16,19 +17,20 @@ import org.springframework.stereotype.Service;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class SeleniumServiceImpl extends CustomException implements SeleniumService {
 	private Logger logger = LoggerFactory.getLogger(SeleniumServiceImpl.class);
 	private static final String DEFAULT_SEARCH_URL = "https://search.naver.com/search" +
 			".naver?where=nexearch&sm=top_hty&fbm=0&ie=utf8&query=";  // 네이버 검색 기본 URL을 잡는다.
 	private static final Duration WAIT_DURATION = Duration.ofMillis(300);
-	private WebDriverService webDriverService;
-	private CustomException customException;
+
+	private final WebDriverService webDriverService;
 
 	@Override
 	public Map<String, String> photoGet(String year, String model, WebDriver driver) {
@@ -50,7 +52,7 @@ public class SeleniumServiceImpl extends CustomException implements SeleniumServ
 			}
 			logger.info("imgTag {} ", imgURL);
 
-			photoGets = new HashMap<>();
+			photoGets = new LinkedHashMap<>();
 			photoGets.put("imgURL", imgURL);
 			photoGets.put("model", model);
 			photoGets.put("year", year);
@@ -66,7 +68,7 @@ public class SeleniumServiceImpl extends CustomException implements SeleniumServ
 	public Map<String, String> infomationGet(String year, String model, WebDriver driver) {
 
 		Map<String, String> infoSource = this.sourceGenerator(year, model, true);
-		Map<String, String> infoMap = new HashMap<>();
+		Map<String, String> infoMap = new LinkedHashMap<>();
 		try {
 			driver.get(infoSource.get("targetURL"));
 			WebDriverWait wait = new WebDriverWait(driver, WAIT_DURATION);
@@ -78,7 +80,8 @@ public class SeleniumServiceImpl extends CustomException implements SeleniumServ
 					ExpectedConditions.visibilityOfElementLocated(By.cssSelector(boxCss)));
 			logger.info("boxCheck {} :" ,boxCheck.getText());
 			if (boxCheck.getText()==null) {
-				throw new TargetNotFoundException("Targeted Information Box Not Found");
+				infoMap.put("errorMsg", "DetectBoxError");
+				return infoMap;
 			}
 
 			infoMap.put("boxCheck", boxCheck.getText());
@@ -108,56 +111,72 @@ public class SeleniumServiceImpl extends CustomException implements SeleniumServ
 		@Override
 		public CarInfoDto  mappingToJson(String year, String model) {
 			WebDriver driver = webDriverService.getDriver();
-			Map<String , Object> beforeConv = new HashMap<>();
-			Map<String , String> parametersInfo = new HashMap<>();
+//			Map<String , Object> beforeConv = new HashMap<>();
+			Map<String , String> parametersInfo = new LinkedHashMap<>();
 			parametersInfo.put("year", year);
 			parametersInfo.put("model", model);
 			CarInfoDto carInfoDto = new CarInfoDto();
 
-			if (!regularExp(year, model)) {
+			if (!regularExp(year, model)) {  //사용자 입력이 정규식 필터링에 문제업는 정상입력이 아니라면
 				carInfoDto.setInformation(Map.of("ErrorInfomation", "Please Input Correct Parameters . . "));
 				carInfoDto.setParameters(parametersInfo);
 				carInfoDto.setStatus(400);
-
+			}else if (year ==null || model ==null){
+				throw new NullPointerException("Null Parameter Input Error");
 			}
+			//TODO parameter  null 입력 예외 추가하기 .... else if() {}
+
+
 			try {
 				Map<String, String> getPhoto = photoGet(year, model , driver);
 				Map<String , String> getInfo = infomationGet(year , model ,driver);
-
-
-				if(getPhoto != null) {
+				if(getPhoto != null) { //정상응답이라 판단
 //					beforeConv.put("status", 200);
 //					beforeConv.put("Information", getInfo);
 					carInfoDto.setStatus(200);
 					carInfoDto.setInformation(getInfo);
 				}
-				else if (!getInfo.get("boxCheck").contains(model)) {  //box check 결과에 parameter인 model이 없다면
+				else if (!getInfo.get("errorMsg").equals("DetectBoxError")) {  //box check 결과에 parameter인 model이 없다면
 //					beforeConv.put("status", 406);
 //					beforeConv.put("Information", "Box Miss Matching to Parameter Model...");
-					carInfoDto.setStatus(406);
-					carInfoDto.setInformation(Map.of("Information", "Box Miss Matching to Parameter Model..."));
+					throw new TargetNotFoundException("Box Miss Matching to Parameter Model...");
+
 				}else if (getPhoto.get("imgURL").equals("Info: Img URL not found")) {
 //					beforeConv.put("status", 404);
 //					beforeConv.put("Information", "Cannot Found ImageURL");
-					carInfoDto.setStatus(404);
-					carInfoDto.setInformation(Map.of("Information", "Cannot Found ImageURL"));
+					throw new ElementNotFoundException("Getting Photo URL logic failed");
 				}
+//				else if () {
+//					throw new MergingDataException(e.getMessage());
+//				}
 //				beforeConv.put("parameters", parametersInfo);
 //				beforeConv.put("imgURL", getPhoto.get("imgURL"));
-//				carInfoDto.setParameters(parametersInfo);
+				carInfoDto.setParameters(parametersInfo);
 				carInfoDto.setImgURL(getPhoto.get("imgURL"));
 
 //				return beforeConv;
 				return carInfoDto;
-			} catch (Exception e) {
-				throw new MergingDataException(e.getMessage());
+			} catch (TargetNotFoundException e) {
+				carInfoDto.setStatus(406);
+				carInfoDto.setInformation(Map.of("Information", "Box Miss Matching to Parameter Model..."));
+			} catch (ElementNotFoundException e) {
+				carInfoDto.setStatus(404);
+				carInfoDto.setInformation(Map.of("Information", "Cannot Found ImageURL"));
+			}catch (NullPointerException e){
+				carInfoDto.setStatus(404);
+				carInfoDto.setInformation(Map.of("Information", "Null Parameter Input Error"));
+			}
+			catch (Exception e) {
+				carInfoDto.setStatus(500);
+				carInfoDto.setInformation(Map.of("Information", e.getMessage()));
 			}finally {
 				if (driver != null) {
 					// 모든 창 및 탭을 닫습니다.
 					webDriverService.quitDriver();
 				}
 			}
-		}
+			return carInfoDto;
+	}
 
 
 
@@ -191,7 +210,7 @@ public class SeleniumServiceImpl extends CustomException implements SeleniumServ
 
 		targetURL = DEFAULT_SEARCH_URL + year + "%20" + encodedModel + "%20" + encodedKeyword;
 		logger.info("target URL {}", targetURL);
-		Map<String, String> generatedSource = new HashMap<>();
+		Map<String, String> generatedSource = new LinkedHashMap<>();
 		generatedSource.put("targetURL", targetURL);
 		generatedSource.put("selectorType", "css");
 		;
