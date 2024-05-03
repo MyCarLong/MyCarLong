@@ -54,11 +54,32 @@ public class CustomException {
 	}
 
 	@ApiResponses(value = {
+			@ApiResponse(responseCode = "404", description = "Parameters (Model / Year) not found")
+	})
+	@ResponseStatus(code = HttpStatus.NOT_FOUND, reason = "Parameters (Model / Year) not found")
+	public static class ParameterNotFoundException extends RuntimeException {
+		public ParameterNotFoundException(String message) {
+			super(message);
+		}
+	}
+
+
+	@ApiResponses(value = {
 			@ApiResponse(responseCode = "500", description = "Error during Merging DATA")
 	})
 	@ResponseStatus(code = HttpStatus.INTERNAL_SERVER_ERROR, reason = "Error during Merging DATA")
 	public static class MergingDataException extends RuntimeException {
 		public MergingDataException(String message) {
+			super(message);
+		}
+	}
+
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "500", description = "Error during Merging DATA")
+	})
+	@ResponseStatus(code = HttpStatus.INTERNAL_SERVER_ERROR, reason = "Error during Merging DATA")
+	public static class InformationNotFoundException extends RuntimeException {
+		public InformationNotFoundException(String message) {
 			super(message);
 		}
 	}

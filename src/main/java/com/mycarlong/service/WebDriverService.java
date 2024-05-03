@@ -50,10 +50,13 @@ public class WebDriverService extends CustomException {
 		ChromeOptions options = new ChromeOptions();
 		options.addArguments("--remote-allow-origins=*");
 		options.addArguments("headless");
-		options.addArguments("disable-gpu");
+//		options.addArguments("disable-gpu");
 		options.addArguments("--no-sandbox");
 		options.addArguments("--window-size=1920,1080");
 		options.addArguments("--disable-dev-shm-usage");
+
+		// User-Agent 설정 추가
+		options.addArguments("--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537");
 
 		// 웹 드라이버 초기화
 		WebDriverManager.chromedriver().setup();
