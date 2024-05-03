@@ -26,6 +26,7 @@ public class NaverMemberClient implements OauthMemberClient {
     public OauthMember fetch(String authCode) {
         NaverToken tokenInfo = naverApiClient.fetchToken(tokenRequestParams(authCode));
         NaverMemberResponse naverMemberResponse = naverApiClient.fetchMember("Bearer " + tokenInfo.accessToken());
+        System.out.println("naverMemberResponse = " + naverMemberResponse);
         return naverMemberResponse.toDomain();
     }
 

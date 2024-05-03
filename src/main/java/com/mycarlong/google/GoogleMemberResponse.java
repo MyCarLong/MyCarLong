@@ -9,32 +9,52 @@ import com.mycarlong.mycarlongback.oauth.OauthMember;
 
 @JsonNaming(SnakeCaseStrategy.class)
 public record GoogleMemberResponse(
-        String id,
-        boolean hasSignedUp,
-        GoogleProfile googleProfile
-) {
-
+                String id,
+                String email,
+                boolean verified_email,
+                String name,
+                String given_name,
+                String family_name,
+                String picture,
+                String locale) {
         public OauthMember toDomain() {
-                System.out.println("googleProfile= " + googleProfile);
-                System.out.println("id= " + id);
                 return OauthMember.builder()
-                .oauthId(new OauthId(String.valueOf(id), GOOGLE))
-                .nickname(googleProfile.name)
-                .email(googleProfile.email)
-                .build();
+                                .oauthId(new OauthId(String.valueOf(id), GOOGLE))
+                                .nickname(name)
+                                .email(email)
+                                .build();
         }
+}
 
 
-@JsonNaming(SnakeCaseStrategy.class)
-public record GoogleProfile(
-        String id,
-        String email,
-        boolean verified_email,
-        String name,
-        String given_name,
-        String family_name,
-        String picture,
-        String locale
-) {
-}
-}
+// @JsonNaming(SnakeCaseStrategy.class)
+// public record GoogleMemberResponse(
+//         String id,
+//         boolean hasSignedUp,
+//         GoogleProfile googleProfile
+// ) {
+
+//         public OauthMember toDomain() {
+//                 System.out.println("googleProfile= " + googleProfile);
+//                 System.out.println("id= " + id);
+//                 return OauthMember.builder()
+//                 .oauthId(new OauthId(String.valueOf(id), GOOGLE))
+//                 .nickname(googleProfile.name)
+//                 .email(googleProfile.email)
+//                 .build();
+//         }
+
+
+// @JsonNaming(SnakeCaseStrategy.class)
+// public record GoogleProfile(
+//         String id,
+//         String email,
+//         @JsonProperty("verified_email") boolean verifiedEmail,
+//         String name,
+//         @JsonProperty("given_name") String givenName,
+//         @JsonProperty("family_name") String familyName,
+//         String picture,
+//         String locale
+// ) {
+// }
+// }
