@@ -6,6 +6,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import com.mycarlong.mycarlongback.oauth.OauthMember;
 import com.mycarlong.mycarlongback.oauth.OauthMemberClient;
 import com.mycarlong.mycarlongback.oauth.OauthServerType;
@@ -31,6 +33,12 @@ public class GoogleMemberClient implements OauthMemberClient {
     @Override
     public OauthMember fetch(String authCode) {
         GoogleToken tokenInfo = googleApiClient.fetchToken(tokenRequestParams(authCode)); // (1)
+        String token = tokenInfo.id_token();
+        DecodedJWT jwt = JWT.decode(token);
+        System.out.println("Header = " + jwt.getHeader());
+        System.out.println("Payload = " + jwt.getPayload());
+        System.out.println("Signature = " + jwt.getSignature());
+        System.out.println("name,email = " + jwt.getClaim("name") + jwt.getClaim("email"));
         GoogleMemberResponse googleMemberResponse =
                 googleApiClient.fetchMember("Bearer " + tokenInfo.access_token());  // (2)
                 logger.info("access_token {}", tokenInfo.access_token());
