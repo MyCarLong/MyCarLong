@@ -1,17 +1,14 @@
 package com.mycarlong.google;
 
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
-import com.mycarlong.oauth.OauthMember;
-import com.mycarlong.oauth.OauthMemberClient;
-import com.mycarlong.oauth.OauthServerType;
+import com.mycarlong.mycarlongback.oauth.OauthMember;
+import com.mycarlong.mycarlongback.oauth.OauthMemberClient;
+import com.mycarlong.mycarlongback.oauth.OauthServerType;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,7 +33,9 @@ public class GoogleMemberClient implements OauthMemberClient {
         GoogleToken tokenInfo = googleApiClient.fetchToken(tokenRequestParams(authCode)); // (1)
         GoogleMemberResponse googleMemberResponse =
                 googleApiClient.fetchMember("Bearer " + tokenInfo.access_token());  // (2)
-        logger.info("access_token {}", tokenInfo.access_token());
+                logger.info("access_token {}", tokenInfo.access_token());
+                System.out.println("googleMemberResponse = " + googleMemberResponse);
+                System.out.println("tokenInfo = " + tokenInfo);
         return googleMemberResponse.toDomain();  // (3)
     }
 
@@ -45,7 +44,7 @@ public class GoogleMemberClient implements OauthMemberClient {
         params.add("grant_type", "authorization_code");
         params.add("client_id", googleOauthConfig.clientId());
         params.add("redirect_uri", googleOauthConfig.redirectUri());
-        params.add("code", URLEncoder.encode(authCode, StandardCharsets.UTF_8));
+        params.add("code", authCode);
         params.add("client_secret", googleOauthConfig.clientSecret());
         logger.info("params {} ", params);
         return params;
