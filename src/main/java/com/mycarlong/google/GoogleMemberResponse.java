@@ -2,6 +2,7 @@ package com.mycarlong.google;
 
 import static com.mycarlong.mycarlongback.oauth.OauthServerType.GOOGLE;
 
+import java.math.BigInteger;
 import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies.SnakeCaseStrategy;
@@ -11,31 +12,31 @@ import com.mycarlong.mycarlongback.oauth.OauthMember;
 
 @JsonNaming(SnakeCaseStrategy.class)
 public record GoogleMemberResponse(
-        Long id,
+        BigInteger id,
         boolean hasSignedUp,
         LocalDateTime connectedAt,
-        GoogleAccount googleAccount
+        GoogleProfile googleProfile
 ) {
 
         public OauthMember toDomain() {
                 return OauthMember.builder()
-                        .oauthId(new OauthId(String.valueOf(id), GOOGLE))
-                        .nickname(googleAccount.profile.name)
-                        .email(googleAccount.profile.email)
-                        .build();
+                .oauthId(new OauthId(String.valueOf(id), GOOGLE))
+                .nickname(googleProfile.name)
+                .email(googleProfile.email)
+                .build();
         }
-        @JsonNaming(SnakeCaseStrategy.class)
-        public record GoogleAccount(
-                Profile profile,
-                String name,
-                String email
-) {
-}
+
 
 @JsonNaming(SnakeCaseStrategy.class)
-public record Profile(
+public record GoogleProfile(
+        String id,
+        String email,
+        String verified_email,
         String name,
-        String email
+        String given_name,
+        String family_name,
+        String locale,
+        String picture
 ) {
 }
 }

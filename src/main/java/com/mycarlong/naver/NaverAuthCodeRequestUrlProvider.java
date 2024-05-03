@@ -1,8 +1,5 @@
 package com.mycarlong.naver;
 
-import java.math.BigInteger;
-import java.security.SecureRandom;
-
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -29,7 +26,7 @@ public class NaverAuthCodeRequestUrlProvider implements AuthCodeRequestUrlProvid
                 .queryParam("response_type", "code")
                 .queryParam("client_id", naverOauthConfig.clientId())
                 .queryParam("redirect_uri", naverOauthConfig.redirectUri())
-                .queryParam("state", naverOauthConfig.state()) // 이건 나중에 따로 찾아보고 설정해서 쓰세용!
+                .queryParam("state", naverOauthConfig.state())
                 .build()
                 .toUriString();
     }

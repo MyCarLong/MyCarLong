@@ -17,7 +17,7 @@ public record NaverMemberResponse(
   public OauthMember toDomain() {
     return OauthMember.builder()
             .oauthId(new OauthId(String.valueOf(response.id), NAVER))
-            .nickname(response.nickname)
+            .nickname(response.name)
             .email(response.email)
             .build();
 }
