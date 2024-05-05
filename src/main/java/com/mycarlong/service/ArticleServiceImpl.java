@@ -1,15 +1,18 @@
 package com.mycarlong.service;
 
 import com.mycarlong.dto.ArticleDto;
-import com.mycarlong.dto.ReplyDto;
+import com.mycarlong.entity.Article;
 import com.mycarlong.repository.ArticleImageRepository;
 import com.mycarlong.repository.ArticleRepository;
 import com.mycarlong.repository.ReplyRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -32,7 +35,30 @@ public class ArticleServiceImpl implements ArticleService{
 
 	@Override
 	public List<ArticleDto> findAllArticle() {
-		return List.of();
+		List<Article> articleList = articleRepository.findAll();
+		List<ArticleDto> articleDtoList = new ArrayList<>();
+
+		for( Article article: articleList ){
+			ArticleDto articleDto = ArticleDto.builder()
+					.id(article.getId())
+					.title(article.getTitle())
+					.content(article.getContent())
+					.author(article.getAuthor())
+					.category(article.getCategory())
+					.articleImgList(article.getThisImgList())
+					.replyList(article.getThisReplyList())
+					.build();
+
+			articleDtoList.add(articleDto);
+		}
+		return articleDtoList;
+	}
+
+	@Override
+	@Transactional
+	public void registArticle(ArticleDto articleDto) {
+		Article article = articleDto.createArticle();
+		articleRepository.save(article);
 	}
 
 	@Override
@@ -40,38 +66,30 @@ public class ArticleServiceImpl implements ArticleService{
 		return null;
 	}
 
-	@Override
-	public ArticleDto registArticle(ArticleDto articleDto) {
-		return null;
-	}
+
 
 	@Override
-	public ArticleDto modifyArticle(ArticleDto articleDto) {
-		return null;
+	public void modifyArticle(ArticleDto articleDto) {
+		Article article = articleDto.createArticle();
+		if(!verifyUser(article)) {
+
+		}
 	}
 
 	@Override
 	public void deleteArticle() {
 
 	}
-
-	@Override
-	public ReplyDto registReply(ReplyDto replyDto) {
-		return null;
-	}
-
-	@Override
-	public List<ReplyDto> getAllReply() {
-		return List.of();
-	}
-
-	@Override
-	public ReplyDto modifyReply() {
-		return null;
-	}
-
-	@Override
-	public void deleteReply() {
-
+	/*
+	* 요청자가 author인 경우에만 게시글의 modify , delete를 가능케 한다. <br>
+	*
+	* 요청자를 확인하는 함수 verifyUser()
+	* */
+	private boolean verifyUser(Article article) {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		String username = auth.getName();
+		if(article.getAuthor().equals(username)){
+			return true;
+		}else return false;
 	}
 }

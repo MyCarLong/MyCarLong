@@ -5,11 +5,13 @@ import com.mycarlong.dto.ReplyDto;
 import java.util.List;
 
 public interface ReplyService {
-	void addReply(ReplyDto replyDto);
 
-	List<ReplyDto> getAllReply();
+	//Reply Part
+	ReplyDto registReply(ReplyDto replyDto);
 
-	void modify(ReplyDto replyDto);
+	List<ReplyDto> getAllReply();  //WHEN article detail view request, All reply read.
 
-	void delete(Long reply_id);
+	ReplyDto modifyReply();
+
+	void deleteReply();
 }

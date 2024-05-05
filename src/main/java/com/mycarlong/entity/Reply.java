@@ -2,15 +2,13 @@ package com.mycarlong.entity;
 
 
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Entity
 @Builder
 @Getter @Setter
 @RequiredArgsConstructor
+@AllArgsConstructor
 public class Reply extends BaseTimeEntity {
 
 	@Id @Column(name = "reply_id")

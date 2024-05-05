@@ -20,6 +20,8 @@ public class QArticle extends EntityPathBase<Article> {
 
     public static final QArticle article = new QArticle("article");
 
+    public final QBaseTimeEntity _super = new QBaseTimeEntity(this);
+
     public final StringPath author = createString("author");
 
     public final StringPath category = createString("category");
@@ -36,9 +38,17 @@ public class QArticle extends EntityPathBase<Article> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
+    //inherited
+    public final DateTimePath<java.time.LocalDateTime> regTime = _super.regTime;
+
     public final ListPath<ArticleImage, QArticleImage> thisImgList = this.<ArticleImage, QArticleImage>createList("thisImgList", ArticleImage.class, QArticleImage.class, PathInits.DIRECT2);
 
+    public final ListPath<Reply, QReply> thisReplyList = this.<Reply, QReply>createList("thisReplyList", Reply.class, QReply.class, PathInits.DIRECT2);
+
     public final StringPath title = createString("title");
+
+    //inherited
+    public final DateTimePath<java.time.LocalDateTime> updateTime = _super.updateTime;
 
     public QArticle(String variable) {
         super(Article.class, forVariable(variable));
