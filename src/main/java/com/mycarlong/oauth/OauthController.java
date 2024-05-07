@@ -29,7 +29,6 @@ public class OauthController {
         return ResponseEntity.ok().build();
     }
 
-    // 추가
     @GetMapping("/login/{oauthServerType}")
     ResponseEntity<Long> login(
             @PathVariable OauthServerType oauthServerType,
