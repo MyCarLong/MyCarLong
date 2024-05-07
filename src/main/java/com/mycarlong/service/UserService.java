@@ -3,30 +3,26 @@ package com.mycarlong.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.mycarlong.mycarlongback.dto.UserDTO;
 import com.mycarlong.mycarlongback.entity.UserEntity;
 import com.mycarlong.mycarlongback.repository.UserRepository;
 
 @Service
 public class UserService {
-  private final UserRepository userRepository;
-
     @Autowired
-    public UserService(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
+    private UserRepository userRepository;
 
-    UserDTO userDTO = new UserDTO();
+    public UserEntity registerUser(String name, String email, String password, String contact) {
+        // 새로운 사용자 생성
+        UserEntity user = new UserEntity();
+        user.setName(name);
+        user.setEmail(email);
+        user.setPassword(password);
+        user.setContact(contact);
+        user.setRole("MEMBER");
 
-    public UserEntity saveUser(UserEntity user) {
-        UserEntity userEntity = new UserEntity();
-        userEntity.setName(userDTO.getName());
-        userEntity.setPassword(userDTO.getPassword());
-        userEntity.setContact(userDTO.getContact());
-        userEntity.setEmail(userDTO.getEmail());
-        userEntity.setRole("ROLE_USER");
+        // 데이터베이스에 사용자 정보 저장
         return userRepository.save(user);
     }
 
-    // 추가로 필요한 메소드가 있다면 여기에 추가할 수 있습니다.
+    // 다른 사용자 관련 기능들도 추가할 수 있음
 }
