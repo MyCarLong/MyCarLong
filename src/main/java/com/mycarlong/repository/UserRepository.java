@@ -6,5 +6,5 @@ import com.mycarlong.entity.UserEntity;
 
 public interface UserRepository extends JpaRepository<UserEntity, Long> {
 
-    UserEntity findByUsername(String username);
+    UserEntity findByEmail(String email);
 }

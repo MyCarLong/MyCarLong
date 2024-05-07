@@ -43,8 +43,8 @@ public class CustomOAuth2User implements OAuth2User {
     }
 
     // 사용자의 유저네임을 반환합니다.
-    public String getUsername() {
-        return userDTO.getUsername();
+    public String getEmail() {
+        return userDTO.getEmail();
     }
 
 }

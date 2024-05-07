@@ -1,9 +1,8 @@
 package com.mycarlong.service;
 
 
-import com.mycarlong.dto.*;
-import com.mycarlong.entity.UserEntity;
-import com.mycarlong.repository.UserRepository;
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
@@ -12,7 +11,14 @@ import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
-import java.util.Map;
+import com.mycarlong.mycarlongback.dto.CustomOAuth2User;
+import com.mycarlong.mycarlongback.dto.GoogleResponse;
+import com.mycarlong.mycarlongback.dto.KakaoResponse;
+import com.mycarlong.mycarlongback.dto.NaverResponse;
+import com.mycarlong.mycarlongback.dto.OAuth2Response;
+import com.mycarlong.mycarlongback.dto.UserDTO;
+import com.mycarlong.mycarlongback.entity.UserEntity;
+import com.mycarlong.mycarlongback.repository.UserRepository;
 
 @Service
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
@@ -58,12 +64,11 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         logger.info("username {}", username);
 
         // 사용자가 데이터베이스에 이미 존재하는지 확인합니다.
-        UserEntity existData = userRepository.findByUsername(username);
+        UserEntity existData = userRepository.findByEmail(username);
 
         if (existData == null) {
             // 데이터베이스에 사용자가 없으면 새로운 사용자 엔티티를 만들고 저장합니다.
             UserEntity userEntity = new UserEntity();
-            userEntity.setUsername(username);
             userEntity.setEmail(oAuth2Response.getEmail());
             userEntity.setName(oAuth2Response.getName());
             if (registrationId.equals("kakao")){
@@ -74,7 +79,6 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
             // 새로운 사용자의 DTO를 생성하고 반환합니다.
             UserDTO userDTO = new UserDTO();
-            userDTO.setUsername(username);
             userDTO.setName(oAuth2Response.getName());
             if (registrationId.equals("kakao")){
                 userDTO.setName((String) ((Map) oAuth2User.getAttributes().get("properties")).get("nickname"));
@@ -92,7 +96,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
             // 업데이트된 사용자의 DTO를 생성하고 반환합니다.
             UserDTO userDTO = new UserDTO();
-            userDTO.setUsername(existData.getUsername());
+            userDTO.setPassword(existData.getPassword());
             userDTO.setName(oAuth2Response.getName());
             if (registrationId.equals("kakao")){
                 userDTO.setName((String) ((Map) oAuth2User.getAttributes().get("properties")).get("nickname"));

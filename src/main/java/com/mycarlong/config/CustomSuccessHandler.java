@@ -38,7 +38,7 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         // OAuth2User로 캐스팅하여 사용자 정보 획득
         CustomOAuth2User customUserDetails = (CustomOAuth2User) authentication.getPrincipal();
         logger.info("authentication {}",authentication);
-        String username = customUserDetails.getUsername(); // 사용자 이름 획득
+        String username = customUserDetails.getName(); // 사용자 이름 획득
 
 
 
