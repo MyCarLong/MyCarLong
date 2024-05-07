@@ -1,9 +1,8 @@
 package com.mycarlong.config;
 
 
-import com.mycarlong.filter.JWTFilter;
-import com.mycarlong.service.CustomOAuth2UserService;
-import jakarta.servlet.http.HttpServletRequest;
+import java.util.Collections;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -15,7 +14,10 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 
-import java.util.Collections;
+import com.mycarlong.mycarlongback.filter.JWTFilter;
+import com.mycarlong.mycarlongback.service.CustomOAuth2UserService;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 @Configuration
 @EnableWebSecurity
@@ -57,9 +59,6 @@ public class SecurityConfig{
 
         // CSRF 비활성화
         http.csrf((csrf) -> csrf.disable());
-
-        // Form 기반 로그인 비활성화
-        http.formLogin((formLogin) -> formLogin.disable());
 
         // HTTP Basic 인증 비활성화
         http.httpBasic((httpBasic) -> httpBasic.disable());

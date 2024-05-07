@@ -6,7 +6,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import com.mycarlong.oauth.OauthServerTypeConverter;
+import com.mycarlong.mycarlongback.oauth.OauthServerTypeConverter;
 
 import lombok.RequiredArgsConstructor;
 
