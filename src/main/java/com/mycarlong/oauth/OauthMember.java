@@ -39,6 +39,7 @@ public class OauthMember {
     private OauthId oauthId;
     private String nickname;
     private String email;
+    private String role;
 
     public Long id() {
         return id;
@@ -54,5 +55,8 @@ public class OauthMember {
 
     public String email() {
         return email;
+    }
+    public String role(){
+        return role;
     }
 }

@@ -19,6 +19,7 @@ public record NaverMemberResponse(
             .oauthId(new OauthId(String.valueOf(response.id), NAVER))
             .nickname(response.name)
             .email(response.email)
+            .role("ROLE_USER")
             .build();
 }
 

@@ -4,12 +4,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.mycarlong.mycarlongback.entity.UserEntity;
+import com.mycarlong.mycarlongback.entity.UserRole;
 import com.mycarlong.mycarlongback.repository.UserRepository;
 
 @Service
 public class UserService {
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private UserRole userRole;
 
     public UserEntity registerUser(String name, String email, String password, String contact) {
         // 새로운 사용자 생성
@@ -18,7 +22,7 @@ public class UserService {
         user.setEmail(email);
         user.setPassword(password);
         user.setContact(contact);
-        user.setRole("MEMBER");
+        user.setRole("ROLE_USER");
 
         // 데이터베이스에 사용자 정보 저장
         return userRepository.save(user);

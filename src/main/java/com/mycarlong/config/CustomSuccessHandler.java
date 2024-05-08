@@ -61,7 +61,7 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
 
         // 클라이언트를 리다이렉트하여 홈페이지로 이동
-        response.sendRedirect("/userInfo");
+        response.sendRedirect("/");
     }
 
     // 쿠키 생성 메서드

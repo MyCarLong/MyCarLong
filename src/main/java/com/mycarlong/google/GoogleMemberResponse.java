@@ -22,6 +22,7 @@ public record GoogleMemberResponse(
                                 .oauthId(new OauthId(String.valueOf(id), GOOGLE))
                                 .nickname(name)
                                 .email(email)
+                                .role("ROLE_USER")
                                 .build();
         }
 }
