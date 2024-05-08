@@ -33,12 +33,6 @@ public class GoogleMemberClient implements OauthMemberClient {
     @Override
     public OauthMember fetch(String authCode) {
         GoogleToken tokenInfo = googleApiClient.fetchToken(tokenRequestParams(authCode)); // (1)
-        // String token = tokenInfo.id_token();
-        // DecodedJWT jwt = JWT.decode(token);
-        // System.out.println("Header = " + jwt.getHeader());
-        // System.out.println("Payload = " + jwt.getPayload());
-        // System.out.println("Signature = " + jwt.getSignature());
-        // System.out.println("name,email = " + jwt.getClaim("name") + jwt.getClaim("email"));
         GoogleMemberResponse googleMemberResponse =
                 googleApiClient.fetchMember("Bearer " + tokenInfo.access_token());  // (2)
                 logger.info("access_token {}", tokenInfo.access_token());

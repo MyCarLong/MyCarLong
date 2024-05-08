@@ -26,6 +26,8 @@ public class JWTUtil {
         secretKey = new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), Jwts.SIG.HS256.key().build().getAlgorithm());
     }
 
+
+
     // 주어진 토큰에서 사용자 이름을 추출하여 반환합니다.
     public String getUsername(String token) {
         return Jwts.parser()
