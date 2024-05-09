@@ -25,7 +25,7 @@ public class ArticleImage {
 	private int imageSetNum;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "article")
+	@JoinColumn(name = "articleId")
 	private Article article;
 
 	public void updateArticleImg(String imageOriginName, String imageSavedName, String imageSavedPath){

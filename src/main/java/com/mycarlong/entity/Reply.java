@@ -21,7 +21,7 @@ public class Reply extends BaseTimeEntity {
 	private String content;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "article_id")
+	@JoinColumn(name = "articleId")
 	private Article article;
 
 }

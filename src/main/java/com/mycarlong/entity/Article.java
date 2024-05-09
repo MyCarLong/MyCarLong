@@ -1,5 +1,6 @@
 package com.mycarlong.entity;
 
+import com.mycarlong.dto.ArticleDto;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
@@ -70,5 +71,9 @@ public class Article extends BaseTimeEntity {
 				flag = true;
 		}
 		return this.hasRelplyFlag = flag;
+	}
+	public void updateThis(ArticleDto articleDto){
+		this.title = articleDto.getTitle();
+		this.content = articleDto.getContent();
 	}
 }

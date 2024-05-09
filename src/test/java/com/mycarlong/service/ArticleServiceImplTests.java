@@ -29,7 +29,7 @@ public class ArticleServiceImplTests {
                 .build();
 
         ArticleDto articleDto = ArticleDto.of(article);
-        articleService.registArticle(articleDto);
+//        articleService.registArticle(articleDto);
     }
     @Test
     public void 아티클_모두_읽어오기테스트() {

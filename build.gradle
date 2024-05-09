@@ -60,7 +60,7 @@ dependencies {
 
 	/*Use by KGH*/
 	implementation 'org.apache.tika:tika-parsers:1.17' //file validation
-	implementation("com.amazonaws:aws-java-sdk-s3:1.12.174") // AWS S3 Multipart File upload
+	implementation "com.amazonaws:aws-java-sdk-s3:1.12.174" // AWS S3 Multipart File upload
 	/*End of Use by KGH*/
 
 

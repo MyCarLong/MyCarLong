@@ -1,13 +1,13 @@
 package com.mycarlong.service;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
 public interface FileService {
 
-	String uploadFile(String uploadPath, String originalFileName, byte[] fileData) throws IOException;
-
+	ResponseEntity<?> uploadFile(String title, String author, String fileIndex, String originalFileName, byte[] fileData);
 	void deleteFile(String filePath) throws IOException;
 
 	String uploadToS3(String upload ,  MultipartFile multipartFile) throws IOException;
