@@ -1,4 +1,4 @@
-# MyCarLong 프로젝트 README
+<!--# MyCarLong 프로젝트 README
 
 ## 1. 프로젝트 소개
 MyCarLong은 Spring Boot 프레임워크와 React 라이브러리를 기반으로 구축된 웹 애플리케이션입니다.  
@@ -123,3 +123,5 @@ MyCarLong 프로젝트 아키텍처 구조
 - **Role:** 백엔드 로직 구현과 시스템 아키텍처 설계
 - **Technology Stack:** Spring Boot, Java, Oracle, Elasticsearch
 - **Interests:** 빅 데이터 처리, 오픈 소스 기술
+
+-->
