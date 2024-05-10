@@ -9,6 +9,8 @@ import com.mycarlong.repository.ArticleRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -29,8 +31,9 @@ public class ArticleImageServiceImpl implements ArticleImageService {
 	private final ArticleRepository articleRepository;
 	private final FileServiceImpl fileService;
 
+	private Logger logger = LoggerFactory.getLogger(ArticleImageServiceImpl.class);
 	@Override
-	public void saveArticleImg(Article article, String fileIndex, MultipartFile articleImgFile) {
+	public String saveArticleImg(Article article, String fileIndex, MultipartFile articleImgFile) {
 
 		try {
 			String imageOriginName = articleImgFile.getOriginalFilename();
@@ -38,7 +41,7 @@ public class ArticleImageServiceImpl implements ArticleImageService {
 			String imageSavedPath = "";
 
 			//파일 업로드
-			if(!StringUtils.isEmpty(imageOriginName)){
+			if(imageOriginName != null){
 				ResponseEntity<?> imgSaveResult = fileService.uploadFile(article.getTitle(), article.getAuthor(),fileIndex,
 																   articleImgFile.getOriginalFilename(),
 				                                                   articleImgFile.getBytes());
@@ -47,16 +50,29 @@ public class ArticleImageServiceImpl implements ArticleImageService {
 					imageSavedName = temp.getFileSavedName();
 					imageSavedPath = temp.getFileUploadFullUrl();
 					log.info("imageSavedName: {} \n imageSavedPath: {} ",imageSavedName, imageSavedPath);
+
+					ArticleImage articleImg = ArticleImage.builder()
+							.imageOriginName(imageOriginName)
+							.imageSavedName(imageSavedName)
+							.imageSavedPath(imageSavedPath)
+							.imageSetNum(Integer.parseInt(fileIndex))
+							.article(article)
+							.build();
+
+					articleImageRepository.save(articleImg);
+					return imageSavedPath;
 				}
 			}
+
 		} catch (Exception e) {
 			log.warn(e.getMessage());
 		}
+		return "error";
 	}
 
 
 		@Override
-		public void updateItemImg(Article article, String fileIndex, MultipartFile articleImgFile) throws Exception {
+		public String updateItemImg(Article article, String fileIndex, MultipartFile articleImgFile) throws Exception {
 			try {
 					if (!articleImgFile.isEmpty()) {
 						Long articleImgId = article.getThisImgList().get(Integer.parseInt(fileIndex)).getId();
@@ -86,6 +102,7 @@ public class ArticleImageServiceImpl implements ArticleImageService {
 			} catch (Exception e) {
 				log.warn(e.getMessage());
 			}
+			return fileIndex;
 		}
 
 

@@ -33,10 +33,12 @@ public class ArticleDto {
 
 	private int hasReply;
 
-	private List<MultipartFile> imgFileList;
-
-	private List<ArticleImage> articleImgList;
-	private List<Reply> replyList;
+	@Builder.Default
+	private List<MultipartFile> imgFileList = new ArrayList<>();
+	@Builder.Default
+	private List<ArticleImage> articleImgList = new ArrayList<>();
+	@Builder.Default
+	private List<Reply> replyList = new ArrayList<>();
 
 	public Article createArticle(){
 		return modelMapper.map(this, Article.class);

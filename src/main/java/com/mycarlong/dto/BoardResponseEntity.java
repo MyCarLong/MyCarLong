@@ -3,6 +3,7 @@ package com.mycarlong.dto;
 import lombok.*;
 import org.springframework.http.HttpStatus;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -12,9 +13,11 @@ import java.util.Map;
 @AllArgsConstructor
 @RequiredArgsConstructor
 public class BoardResponseEntity {
-	private List<ArticleDto> articleList;
+	@Builder.Default
+	private List<ArticleDto> articleList = new ArrayList<>();
 	private Map<String, String> errorDetails;
 	private ArticleDto article;
-	private List<ReplyDto> replyDtoList;
+	@Builder.Default
+	private List<ReplyDto> replyDtoList = new ArrayList<>();
 	private HttpStatus status;
 }

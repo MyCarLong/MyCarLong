@@ -1,10 +1,13 @@
 package com.mycarlong.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.mycarlong.dto.ArticleDto;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -18,7 +21,6 @@ import java.util.List;
 @Entity
 @Getter @Setter
 @Table(name = "article")
-@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -49,11 +51,15 @@ public class Article extends BaseTimeEntity {
 	private int hasImgaes;
 	private boolean hasImgaesFlag;
 
-	@OneToMany(mappedBy = "article" ,  cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<ArticleImage>  thisImgList;
+	@Builder.Default
+	@JsonManagedReference
+	@OneToMany(mappedBy = "article" ,  cascade = CascadeType.REMOVE, orphanRemoval = true)
+	private List<ArticleImage>  thisImgList = new ArrayList<>();
 
-	@OneToMany(mappedBy = "article" ,  cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<Reply> thisReplyList;
+	@Builder.Default
+	@JsonManagedReference
+	@OneToMany(mappedBy = "article" ,  cascade = CascadeType.REMOVE, orphanRemoval = true)
+	private List<Reply> thisReplyList = new ArrayList<>();
 
 
 	/**

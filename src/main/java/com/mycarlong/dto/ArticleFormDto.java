@@ -4,6 +4,7 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -24,7 +25,8 @@ public class ArticleFormDto {
 
 	private String category;
 
-	private List<MultipartFile> articleImgList;
+	@Builder.Default
+	private List<MultipartFile> articleImgList = new ArrayList<>();
 
 	private boolean processed;
 }

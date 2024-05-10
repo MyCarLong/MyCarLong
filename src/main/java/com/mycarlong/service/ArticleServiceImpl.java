@@ -9,6 +9,8 @@ import com.mycarlong.repository.ArticleRepository;
 import com.mycarlong.repository.ReplyRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -18,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,6 +35,7 @@ public class ArticleServiceImpl implements ArticleService {
 	private final ArticleImageRepository articleImageRepository;
 	private final ReplyRepository replyRepository;
 
+	private Logger logger = LoggerFactory.getLogger(ArticleServiceImpl.class);
 	@Override
 	public List<ArticleDto> findAllArticle() {
 		try {
@@ -53,14 +57,17 @@ public class ArticleServiceImpl implements ArticleService {
 		try {
 			Article article = articleDto.createArticle();
 
-
 			for(int i=0;i<imgFileList.size();i++){
 				ArticleImage articleImage = new ArticleImage();
 				articleImage.setArticle(article);
 				articleImage.setImageSetNum(i);
+				logger.info(" Article Image = {}",articleImage);
+
 
 				articleImageService.saveArticleImg(article, String.valueOf(i) , imgFileList.get(i));
+				article.getThisImgList().add(articleImage);
 			}
+//			article.setThisImgList(articleImageList);
 			articleRepository.save(article);
 		} catch (Exception e) {
 			throw new BoardExceptionList.FileUploadException("File Upload 혹은 이미지 등록 중 에러발생",e);
@@ -71,8 +78,6 @@ public class ArticleServiceImpl implements ArticleService {
 	@Override
 	public ArticleDto viewArticleDetail(Long articleId) {
 		Article article = articleRepository.findById(articleId).orElse(null); //Optional 객체로 반환하기 때문에 orElse 추가
-
-		article.setThisImgList(article.getId());
 		if (article == null) {
 			throw new BoardExceptionList.DataMismatchException("제공된 Article ID에 해당하는 게시글을 찾을 수 없습니다.", null);
 		}

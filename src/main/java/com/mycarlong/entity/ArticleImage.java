@@ -1,12 +1,12 @@
 package com.mycarlong.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
 @Getter @Setter
-@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -25,6 +25,7 @@ public class ArticleImage {
 	private int imageSetNum;
 
 	@ManyToOne(fetch = FetchType.LAZY)
+	@JsonBackReference
 	@JoinColumn(name = "articleId")
 	private Article article;
 
