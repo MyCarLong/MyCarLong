@@ -2,9 +2,12 @@ package com.mycarlong.controller;
 
 
 import com.mycarlong.dto.ArticleDto;
+import com.mycarlong.dto.ReplyDto;
 import com.mycarlong.service.ArticleImageServiceImpl;
 import com.mycarlong.service.ArticleServiceImpl;
+import com.mycarlong.service.ReplyServiceImpl;
 import lombok.RequiredArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -18,43 +21,53 @@ import java.util.List;
 public class BoardController {
 
 	private final ArticleServiceImpl articleService;
-	private final ArticleImageServiceImpl articleImageService;
+	private final ReplyServiceImpl replyService;
 
-	/* 글 조회 */
-	@GetMapping("/view/list")
+
+	@GetMapping("/articles")
 	public List<ArticleDto> viewArticleList() {
 		return articleService.findAllArticle();
 	}
-//
-//
-	@GetMapping("/view/detail/{articleId}")
+
+	@GetMapping("/articles?year={year}&model={model}")
+	public List<ArticleDto> viewArticleListFilteredModel(
+			@PathVariable String year,
+            @PathVariable String model) {
+		String category = model+"-"+year;
+		return articleService.findByModelAndYear(category);
+	}
+
+
+	@GetMapping("/article/{articleId}")
 	public ArticleDto viewArticleDetail(@PathVariable Long articleId) {
 		return articleService.viewArticleDetail(articleId);
 	}
-	/* 글 등록 */
-	@PostMapping("/new")
+
+	@PostMapping("/articles")
 	public void registArticle(@RequestBody ArticleDto articleDto ,
 	                          @RequestParam("imgFiles") List<MultipartFile> imgFileList) throws IOException {
 		articleService.registArticle(articleDto, imgFileList); //file upload contains in articleService;
-
 	}
 
-//	@PostMapping("/reply")
-//	public void replyArticleRegistration(
-//			@PathVariable ReplyDto replyDto) {
-//		articleService.replyArticleRegistration(replyDto);
-//	}//must be preceded POST ARTICLE
-	/* 글 삭제 */
-	@DeleteMapping("/del/{articleId}")
+
+	@DeleteMapping("/article/{articleId}")
 	public void deleteArticle(@PathVariable Long articleId, ArticleDto articleDto) {
 		articleService.deleteArticle(articleId, articleDto);
 	} //by 'on delete cascade' reply and file delete together.
-//
-// 	/* 글 업데이트 */
-//	@PutMapping("/view/mod/{article_id}")
-//	public void updateArticle( @RequestBody ArticleDto articleDto,
-//			@PathVariable Long article_id) {
-//        articleService.updateArticle(article_id);
-//    }
-//}
+
+	@PutMapping("/article/{articleId}")
+	public void updateArticle(@PathVariable Long articleId,
+		                          @RequestBody ArticleDto articleDto) {
+	        articleService.modifyArticle(articleId,articleDto);
+	    }
+
+	@PostMapping("/article/{articleId}/reply")
+	public void replyArticleRegistration(@PathVariable Long articleId,
+	                                     @RequestBody ReplyDto replyDto) {
+		replyDto.setArticleId(articleId);
+		replyService.registReply(replyDto);
+	}//must be preceded POST ARTICLE
+
+
+
 }

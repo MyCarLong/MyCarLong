@@ -1,8 +1,16 @@
 package com.mycarlong.dto;
 
+import com.mycarlong.entity.Article;
+import com.mycarlong.entity.Reply;
 import jakarta.validation.constraints.NotEmpty;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
+import org.modelmapper.ModelMapper;
 
+@Getter @Setter
+@Builder
 public class ReplyDto {
 
 	private Long id;
@@ -16,4 +24,11 @@ public class ReplyDto {
 	private String content;
 
 	private Long articleId;
+
+	private static ModelMapper modelMapper = new ModelMapper();
+	public Reply createReply(){
+		return modelMapper.map(this, Reply.class);
+	}
+
+
 }

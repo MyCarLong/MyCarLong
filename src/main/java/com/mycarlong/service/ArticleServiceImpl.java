@@ -8,9 +8,11 @@ import com.mycarlong.repository.ArticleRepository;
 import com.mycarlong.repository.ReplyRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -26,7 +28,7 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class ArticleServiceImpl implements ArticleService{
+public class ArticleServiceImpl implements ArticleService {
 
 	private final ArticleRepository articleRepository;
 	private final ArticleImageServiceImpl articleImageService;
@@ -41,10 +43,7 @@ public class ArticleServiceImpl implements ArticleService{
 
 	@Override
 	public List<ArticleDto> findFiftyArticldOrderByDesc() {
-		PageRequest pageRequest = PageRequest.of(0, 50, Sort.by("id").descending());
-		Page<Article> page = articleRepository.findAll(pageRequest);
-		List<Article> articles = page.getContent();
-		return  articles.stream().map(ArticleDto::of).collect(Collectors.toList());
+		return pagingArticle(20,"null");
 	}
 
 	@Override
@@ -94,7 +93,7 @@ public class ArticleServiceImpl implements ArticleService{
 	*
 	* 요청자를 확인하는 함수 verifyUser()
 	* */
-	private boolean verifyUser( ArticleDto articleDto) {
+	private void verifyUser(ArticleDto articleDto) {
 		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		if (principal instanceof UserDetails) {
 			String username = ((UserDetails) principal).getUsername();
@@ -102,6 +101,26 @@ public class ArticleServiceImpl implements ArticleService{
 				throw new AccessDeniedException("You are not the author of this article.");
 			}
 		}
-		return true;
+	}
+	@Override
+	public List<ArticleDto> findByModelAndYear(String category) {
+		List<Article> articleList = articleRepository.findByModelAndYear(category);
+		return pagingArticle(20,category);
+		//return articleList.stream().map(ArticleDto::of).collect(Collectors.toList());
+	}
+
+
+	private List<ArticleDto> pagingArticle(int size , String attribute ) {
+		PageRequest pageRequest = PageRequest.of(0, size, Sort.by("id").descending());
+		if (attribute.equals("category")) {
+			PageRequest pageRequests = PageRequest.of(0, size, Sort.by("category").descending());
+			Page<Article> pages = articleRepository.findByModelAndYear(pageRequests);
+			List<Article> articles = pages.getContent();
+			return  articles.stream().map(ArticleDto::of).collect(Collectors.toList());
+		}else {
+		Page<Article> page = articleRepository.findAll(pageRequest);
+		List<Article> articles = page.getContent();
+		return  articles.stream().map(ArticleDto::of).collect(Collectors.toList());
+		}
 	}
 }

@@ -8,8 +8,10 @@ import java.util.List;
 
 public interface ArticleService {
 	List<ArticleDto> findAllArticle();
-	List<ArticleDto> findFiftyArticldOrderByDesc();
+
 	ArticleDto viewArticleDetail(Long article_id);
+
+	List<ArticleDto> findFiftyArticldOrderByDesc();
 
 	void registArticle(ArticleDto articleDto, List<MultipartFile> multipartFileList) throws IOException;
 
@@ -17,4 +19,5 @@ public interface ArticleService {
 
 	void deleteArticle(Long articleId, ArticleDto articleDto);
 
+	List<ArticleDto> findByModelAndYear(String category);
 }

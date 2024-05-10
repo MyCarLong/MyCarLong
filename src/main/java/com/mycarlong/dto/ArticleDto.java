@@ -27,6 +27,7 @@ public class ArticleDto {
 	@NotBlank(message = "글쓴이는 비워둘 수 없습니다.")
 	private String author;
 
+	@NotBlank(message = "카테고리는 비워둘 수 없습니다.")
 	private String category;
 
 	private int hasReply;

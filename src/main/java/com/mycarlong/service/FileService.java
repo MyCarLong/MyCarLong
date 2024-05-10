@@ -5,6 +5,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
+
 public interface FileService {
 
 	ResponseEntity<?> uploadFile(String title, String author, String fileIndex, String originalFileName, byte[] fileData);
