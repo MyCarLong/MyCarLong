@@ -6,9 +6,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.mycarlong.mycarlongback.config.JWTUtil;
-import com.mycarlong.mycarlongback.entity.UserEntity;
-import com.mycarlong.mycarlongback.repository.UserRepository;
+import com.mycarlong.config.JWTUtil;
+import com.mycarlong.entity.UserEntity;
+import com.mycarlong.repository.UserRepository;
 
 @Service
 public class UserService {

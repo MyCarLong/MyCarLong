@@ -3,7 +3,7 @@ package com.mycarlong.google;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import com.mycarlong.mycarlongback.oauth.AuthCodeRequestUrlProvider;
+import com.mycarlong.oauth.AuthCodeRequestUrlProvider;
 import com.mycarlong.mycarlongback.oauth.OauthServerType;
 
 import lombok.RequiredArgsConstructor;

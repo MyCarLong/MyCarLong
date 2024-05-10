@@ -12,7 +12,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
-import com.mycarlong.mycarlongback.dto.CustomOAuth2User;
+import com.mycarlong.dto.CustomOAuth2User;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;

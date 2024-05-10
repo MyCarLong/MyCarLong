@@ -18,7 +18,7 @@ oauth:
     scope: "${spring.security.oauth2.client.registration.google.scope}"
 
 server:
-  port: 8080
+  port: 8097
 spring:
   application:
     name: mycarlong-back
@@ -46,8 +46,8 @@ spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/ouath
-    username: dd2558
-    password: gkehddnjs10
+    username: root
+    password: 1234
 
 jwt:
   expiration: 3600

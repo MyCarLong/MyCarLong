@@ -1,6 +1,5 @@
 package com.mycarlong.service;
 
-import com.mycarlong.dto.CarInfoDto;
 import org.openqa.selenium.WebDriver;
 
 import java.util.Map;

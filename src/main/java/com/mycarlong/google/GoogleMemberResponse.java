@@ -1,11 +1,11 @@
 package com.mycarlong.google;
 
-import static com.mycarlong.mycarlongback.oauth.OauthServerType.GOOGLE;
+import static com.mycarlong.oauth.OauthServerType.GOOGLE;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies.SnakeCaseStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
-import com.mycarlong.mycarlongback.oauth.OauthId;
-import com.mycarlong.mycarlongback.oauth.OauthMember;
+import com.mycarlong.oauth.OauthId;
+import com.mycarlong.oauth.OauthMember;
 
 @JsonNaming(SnakeCaseStrategy.class)
 public record GoogleMemberResponse(

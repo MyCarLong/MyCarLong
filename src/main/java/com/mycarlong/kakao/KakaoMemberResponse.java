@@ -1,13 +1,13 @@
 package com.mycarlong.kakao;
 
-import static com.mycarlong.mycarlongback.oauth.OauthServerType.KAKAO;
+import static com.mycarlong.oauth.OauthServerType.KAKAO;
 
 import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies.SnakeCaseStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
-import com.mycarlong.mycarlongback.oauth.OauthId;
-import com.mycarlong.mycarlongback.oauth.OauthMember;
+import com.mycarlong.oauth.OauthId;
+import com.mycarlong.oauth.OauthMember;
 
 @JsonNaming(SnakeCaseStrategy.class)
 public record KakaoMemberResponse(

@@ -11,10 +11,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.mycarlong.mycarlongback.dto.ApiResponse;
-import com.mycarlong.mycarlongback.dto.SignupRequest;
-import com.mycarlong.mycarlongback.entity.UserEntity;
-import com.mycarlong.mycarlongback.service.UserService;
+import com.mycarlong.dto.ApiResponse;
+import com.mycarlong.dto.SignupRequest;
+import com.mycarlong.entity.UserEntity;
+import com.mycarlong.service.UserService;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

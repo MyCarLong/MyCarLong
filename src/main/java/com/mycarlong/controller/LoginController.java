@@ -15,10 +15,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.mycarlong.mycarlongback.dto.ApiResponse;
-import com.mycarlong.mycarlongback.dto.LoginRequest;
-import com.mycarlong.mycarlongback.entity.UserEntity;
-import com.mycarlong.mycarlongback.repository.UserRepository;
+import com.mycarlong.dto.ApiResponse;
+import com.mycarlong.dto.LoginRequest;
+import com.mycarlong.entity.UserEntity;
+import com.mycarlong.repository.UserRepository;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;

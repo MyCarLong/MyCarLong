@@ -10,9 +10,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.mycarlong.mycarlongback.config.JWTUtil;
-import com.mycarlong.mycarlongback.dto.CustomOAuth2User;
-import com.mycarlong.mycarlongback.dto.UserDTO;
+import com.mycarlong.config.JWTUtil;
+import com.mycarlong.dto.CustomOAuth2User;
+import com.mycarlong.dto.UserDTO;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

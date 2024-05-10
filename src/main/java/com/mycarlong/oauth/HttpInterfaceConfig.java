@@ -6,9 +6,9 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.support.WebClientAdapter;
 import org.springframework.web.service.invoker.HttpServiceProxyFactory;
 
-import com.mycarlong.mycarlongback.google.GoogleApiClient;
-import com.mycarlong.mycarlongback.kakao.KakaoApiClient;
-import com.mycarlong.mycarlongback.naver.NaverApiClient;
+import com.mycarlong.google.GoogleApiClient;
+import com.mycarlong.kakao.KakaoApiClient;
+import com.mycarlong.naver.NaverApiClient;
 
 @Configuration
 public class HttpInterfaceConfig {

@@ -1,8 +1,11 @@
 package com.mycarlong.config;
 
 
+import java.com.mycarlong.mycarlongback.service.CustomOAuth2UserService;
 import java.util.Collections;
 
+import com.mycarlong.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -14,8 +17,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 
-import com.mycarlong.mycarlongback.filter.JWTFilter;
-import com.mycarlong.mycarlongback.service.CustomOAuth2UserService;
+import com.mycarlong.filter.JWTFilter;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -23,15 +25,15 @@ import jakarta.servlet.http.HttpServletRequest;
 @EnableWebSecurity
 public class SecurityConfig{
 
-    private final CustomOAuth2UserService customOAuth2UserService;
+    private final UserService userService;
     private final CustomSuccessHandler customSuccessHandler;
     private final JWTUtil jwtUtil;
 
     private final JWTFilter jwtFIlter;
 
 
-    public SecurityConfig(CustomOAuth2UserService customOAuth2UserService, CustomSuccessHandler customSuccessHandler, JWTUtil jwtUtil, JWTFilter jwtFIlter) {
-        this.customOAuth2UserService = customOAuth2UserService;
+    public SecurityConfig(UserService userService, CustomSuccessHandler customSuccessHandler, JWTUtil jwtUtil, JWTFilter jwtFIlter) {
+        this.userService = userService;
         this.customSuccessHandler = customSuccessHandler;
         this.jwtUtil = jwtUtil;
         this.jwtFIlter = jwtFIlter;
@@ -39,7 +41,7 @@ public class SecurityConfig{
 
     // SecurityFilterChain을 생성하는 메서드입니다.
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http, UserService userService) throws Exception {
 
         // CORS 설정
         http.cors(corsCustomizer -> corsCustomizer.configurationSource(new CorsConfigurationSource() {
@@ -66,13 +68,13 @@ public class SecurityConfig{
         // JWT 필터 추가
         http.addFilterAfter(new JWTFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
         http.addFilterAfter(new JWTFilter(jwtUtil), OAuth2LoginAuthenticationFilter.class);
-        // OAuth2 설정
+    /*    // OAuth2 설정
         http.oauth2Login((oauth2) -> oauth2
                         .userInfoEndpoint((userInfoEndpointConfig) -> userInfoEndpointConfig
                                 .userService(customOAuth2UserService))
                         .successHandler(customSuccessHandler)
 //                .defaultSuccessUrl("/testCookie")
-        );
+        );*/
 
         // 경로별 인가 작업
         http.authorizeHttpRequests((authorizeRequests) -> authorizeRequests

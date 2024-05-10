@@ -4,9 +4,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
-import com.mycarlong.mycarlongback.oauth.OauthMember;
-import com.mycarlong.mycarlongback.oauth.OauthMemberClient;
-import com.mycarlong.mycarlongback.oauth.OauthServerType;
+import com.mycarlong.oauth.OauthMember;
+import com.mycarlong.oauth.OauthMemberClient;
+import com.mycarlong.oauth.OauthServerType;
 
 import lombok.RequiredArgsConstructor;
 

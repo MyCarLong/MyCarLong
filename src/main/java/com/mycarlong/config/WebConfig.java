@@ -9,7 +9,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import com.mycarlong.mycarlongback.oauth.OauthServerTypeConverter;
+import com.mycarlong.oauth.OauthServerTypeConverter;
 
 import lombok.RequiredArgsConstructor;
 
