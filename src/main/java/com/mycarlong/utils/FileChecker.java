@@ -59,15 +59,15 @@ public class FileChecker {
 			String detectedExtension = this.analyzeFileExtension(fileData);
 			for (AllowedFileExtension extension : AllowedFileExtension.values()) {
 				if (extension.getExtension().equals(detectedExtension)) {
-					return true;
+					return false;
 				}
 			}
 			log.error("주어진 허용 확장자 목록에서 찾을 수 없음");
-			return false;
+			return true;
 			//allowedFileExtensions.contains(detectedExtension);
 		} catch (Exception e) {
 			log.error("file 확장자 detect 실패");
-			return false;
+			return true;
 		}
 	}
 }

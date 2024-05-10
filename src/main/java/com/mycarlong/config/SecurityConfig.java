@@ -16,24 +16,25 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
-        http.formLogin(form -> form
-                .loginPage("/members/login")
-                .defaultSuccessUrl("/", true)
-                .failureUrl("/members/login/error")
-                .usernameParameter("email")
-                .passwordParameter("password")
-                .permitAll());
-
-        http.logout(Customizer.withDefaults());
+//        http.formLogin(form -> form
+//                .loginPage("/members/login")
+//                .defaultSuccessUrl("/", true)
+//                .failureUrl("/members/login/error")
+//                .usernameParameter("email")
+//                .passwordParameter("password")
+//                .permitAll());
+//
+//        http.logout(Customizer.withDefaults());
 
         http.authorizeHttpRequests(request -> request
-                .requestMatchers("/css/**").permitAll()
-                .requestMatchers("/", "/member/**" , "/**").permitAll()
-                .requestMatchers("/admin/**").hasRole("ADMIN")
+//                .requestMatchers("/css/**").permitAll()
+                .requestMatchers("/", "/member/**" , "/**" , "/board/**").permitAll()
+//                .requestMatchers("/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated());
+        http.csrf().disable();
 
-        http.exceptionHandling(exception -> exception
-                .authenticationEntryPoint(new CustomAuthenticationEntryPoint()));
+//        http.exceptionHandling(exception -> exception
+//                .authenticationEntryPoint(new CustomAuthenticationEntryPoint()));
 
         return http.build();
     }

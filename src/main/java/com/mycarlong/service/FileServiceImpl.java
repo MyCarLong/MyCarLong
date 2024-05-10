@@ -47,7 +47,7 @@ public class FileServiceImpl implements FileService{
 	})
 	@Override
 	public ResponseEntity<?> uploadFile(String title, String author, String fileIndex, String originalFileName, byte[] fileData) {
-		if (!checker.isAllowedExtension(fileData)) {
+		if (checker.isAllowedExtension(fileData)) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("fail to Upload file because fileData is Null");
 		}
 		//TODO: 파일저장시 제목 게시글제목_저자_UUID_FileSetNum.jpg 같은 방식으로 고치기
@@ -84,7 +84,7 @@ public class FileServiceImpl implements FileService{
 
 
 	public String updateFile(String title, String author, String fileIndex, String originalFileName, byte[] fileData) {
-		if (!checker.isAllowedExtension(fileData)) {
+		if (checker.isAllowedExtension(fileData)) {
 			return "fail to Upload file because fileData is Null";
 		}
 		//TODO: 파일저장시 제목 게시글제목_저자_UUID_FileSetNum.jpg 같은 방식으로 고치기

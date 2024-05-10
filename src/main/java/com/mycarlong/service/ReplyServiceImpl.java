@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -19,23 +20,21 @@ public class ReplyServiceImpl implements ReplyService{
 	private final ArticleRepository articleRepository;
 	private final ReplyRepository replyRepository;
 	@Override
-	public ReplyDto registReply(ReplyDto replyDto) {
+	public void registReply(ReplyDto replyDto) {
 		Reply thisReply = replyDto.createReply();
 		Article article = articleRepository.findById(replyDto.getArticleId()).orElse(null);
 		thisReply.setArticle(article);
 		replyRepository.save(thisReply);
-
-		return null;
 	}
 
 	@Override
-	public List<ReplyDto> getAllReply() {
-		return List.of();
+	public List<ReplyDto> getAllReply(Long articleId) {
+		return replyRepository.findAllReplyByArticleId(articleId).stream().map(ReplyDto::of).collect(Collectors.toList());
 	}
 
 	@Override
-	public ReplyDto modifyReply() {
-		return null;
+	public void modifyReply() {
+
 	}
 
 	@Override

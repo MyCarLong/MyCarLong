@@ -1,5 +1,6 @@
 package com.mycarlong.service;
 
+import com.mycarlong.config.BoardExceptionList;
 import com.mycarlong.dto.ArticleDto;
 import com.mycarlong.entity.Article;
 import com.mycarlong.entity.ArticleImage;
@@ -8,19 +9,15 @@ import com.mycarlong.repository.ArticleRepository;
 import com.mycarlong.repository.ReplyRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.repository.PagingAndSortingRepository;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -37,27 +34,36 @@ public class ArticleServiceImpl implements ArticleService {
 
 	@Override
 	public List<ArticleDto> findAllArticle() {
-		List<Article> articleList = articleRepository.findAll();
-		return articleList.stream().map(ArticleDto::of).collect(Collectors.toList());
+		try {
+			List<Article> articleList = articleRepository.findAll();
+			return articleList.stream().map(ArticleDto::of).collect(Collectors.toList());
+		} catch (Exception e) {
+			throw new BoardExceptionList.DatabaseAccessException("데이터베이스 접근 에러발생",e);
+		}
 	}
 
 	@Override
 	public List<ArticleDto> findFiftyArticldOrderByDesc() {
-		return pagingArticle(20,"null");
+		return pagingArticle(20,"null");  //내부에서 이미 예외처리 하므로 별도 예외처리 X
 	}
 
 	@Override
 	@Transactional
-	public void registArticle(ArticleDto articleDto, List<MultipartFile> imgFileList) throws IOException {
-		Article article = articleDto.createArticle();
-		articleRepository.save(article);
+	public void registArticle(ArticleDto articleDto, List<MultipartFile> imgFileList) {
+		try {
+			Article article = articleDto.createArticle();
 
-		for(int i=0;i<imgFileList.size();i++){
-			ArticleImage articleImage = new ArticleImage();
-			articleImage.setArticle(article);
-			articleImage.setImageSetNum(i);
 
-			articleImageService.saveArticleImg(article, String.valueOf(i) , imgFileList.get(i));
+			for(int i=0;i<imgFileList.size();i++){
+				ArticleImage articleImage = new ArticleImage();
+				articleImage.setArticle(article);
+				articleImage.setImageSetNum(i);
+
+				articleImageService.saveArticleImg(article, String.valueOf(i) , imgFileList.get(i));
+			}
+			articleRepository.save(article);
+		} catch (Exception e) {
+			throw new BoardExceptionList.FileUploadException("File Upload 혹은 이미지 등록 중 에러발생",e);
 		}
 
 	}
@@ -65,6 +71,11 @@ public class ArticleServiceImpl implements ArticleService {
 	@Override
 	public ArticleDto viewArticleDetail(Long articleId) {
 		Article article = articleRepository.findById(articleId).orElse(null); //Optional 객체로 반환하기 때문에 orElse 추가
+
+		article.setThisImgList(article.getId());
+		if (article == null) {
+			throw new BoardExceptionList.DataMismatchException("제공된 Article ID에 해당하는 게시글을 찾을 수 없습니다.", null);
+		}
 		return ArticleDto.of(article);
 	}
 
@@ -85,6 +96,9 @@ public class ArticleServiceImpl implements ArticleService {
 	public void deleteArticle(Long articleId, ArticleDto articleDto) {
 		verifyUser(articleDto);
 		Article existingArticle = articleRepository.findById(articleId).orElse(null); // 게시글 조회
+		if (existingArticle == null) {
+			throw new BoardExceptionList.DataMismatchException("제공된 Article ID에 해당하는 게시글을 찾을 수 없어 삭제가 완료되지않았습니다..", null);
+		}
 		articleRepository.deleteById(articleId);
 	}
 
@@ -98,29 +112,33 @@ public class ArticleServiceImpl implements ArticleService {
 		if (principal instanceof UserDetails) {
 			String username = ((UserDetails) principal).getUsername();
 			if (!username.equals(articleDto.getAuthor())) {
-				throw new AccessDeniedException("You are not the author of this article.");
+				throw new BoardExceptionList.AuthorizationException("게시글에 대한 권한이 없는 유저입니다..", null);
 			}
 		}
 	}
 	@Override
-	public List<ArticleDto> findByModelAndYear(String category) {
-		List<Article> articleList = articleRepository.findByModelAndYear(category);
-		return pagingArticle(20,category);
+	public List<ArticleDto> findByCategory(String category) {
+		List<Article> articleList = articleRepository.findByCategoryOrderByRegTimeDesc(category);
+		if (articleList == null) {
+			throw new BoardExceptionList.DataMismatchException("제공된 category 에 해당하는 데이터를 찾을 수 없습니다. 파라미터 형식 'model-year'", null);
+		}
+		return pagingArticleByCategory(20,category);
 		//return articleList.stream().map(ArticleDto::of).collect(Collectors.toList());
 	}
 
 
 	private List<ArticleDto> pagingArticle(int size , String attribute ) {
 		PageRequest pageRequest = PageRequest.of(0, size, Sort.by("id").descending());
-		if (attribute.equals("category")) {
-			PageRequest pageRequests = PageRequest.of(0, size, Sort.by("category").descending());
-			Page<Article> pages = articleRepository.findByModelAndYear(pageRequests);
-			List<Article> articles = pages.getContent();
-			return  articles.stream().map(ArticleDto::of).collect(Collectors.toList());
-		}else {
 		Page<Article> page = articleRepository.findAll(pageRequest);
 		List<Article> articles = page.getContent();
 		return  articles.stream().map(ArticleDto::of).collect(Collectors.toList());
 		}
+	private  List<ArticleDto> pagingArticleByCategory(int size, String category) {
+			PageRequest pageRequests = PageRequest.of(0, size, Sort.by("id").descending());
+			Page<Article> pages = articleRepository.findByCategoryOrderByRegTimeDesc(pageRequests , category);
+			List<Article> articles = pages.getContent();
+			return  articles.stream().map(ArticleDto::of).collect(Collectors.toList());
+		}
 	}
-}
+
+

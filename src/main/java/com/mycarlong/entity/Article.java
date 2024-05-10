@@ -40,6 +40,7 @@ public class Article extends BaseTimeEntity {
 	@NotEmpty(message = "글쓴이를 입력해주세요.")
 	private String author;
 
+	@Column(name = "modelAndYear")
 	private String category;
 
 	private int hasReply;

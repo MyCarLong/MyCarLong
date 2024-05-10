@@ -36,6 +36,10 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	testImplementation 'org.springframework.security:spring-security-test:6.2.3'
 
+	implementation 'org.springframework.boot:spring-boot-starter-cache'
+	// https://mvnrepository.com/artifact/org.apache.tika/tika-core
+	implementation group: 'org.apache.tika', name: 'tika-core', version: '2.9.1'
+
 
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-security:3.2.4'

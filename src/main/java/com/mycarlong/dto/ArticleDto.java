@@ -6,6 +6,7 @@ import com.mycarlong.entity.Reply;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import org.modelmapper.ModelMapper;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,8 +33,10 @@ public class ArticleDto {
 
 	private int hasReply;
 
-	private List<ArticleImage> articleImgList = new ArrayList<>();
-	private List<Reply> replyList = new ArrayList<>();
+	private List<MultipartFile> imgFileList;
+
+	private List<ArticleImage> articleImgList;
+	private List<Reply> replyList;
 
 	public Article createArticle(){
 		return modelMapper.map(this, Article.class);

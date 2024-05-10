@@ -19,5 +19,5 @@ public interface ArticleService {
 
 	void deleteArticle(Long articleId, ArticleDto articleDto);
 
-	List<ArticleDto> findByModelAndYear(String category);
+	List<ArticleDto> findByCategory(String category);
 }

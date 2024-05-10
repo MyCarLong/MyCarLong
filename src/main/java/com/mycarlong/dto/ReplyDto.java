@@ -29,6 +29,7 @@ public class ReplyDto {
 	public Reply createReply(){
 		return modelMapper.map(this, Reply.class);
 	}
-
-
+	public static ReplyDto of(Reply reply){
+		return modelMapper.map(reply, ReplyDto.class);
+	}
 }
