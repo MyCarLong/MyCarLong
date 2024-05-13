@@ -6,6 +6,8 @@
 HELP.md
 ReadMe.md
 
+boardSetting.yml
+S3_Setting.yml
 application-API-KEY.properties
 application.properties
 # IDE 설정 폴더 (STS)
