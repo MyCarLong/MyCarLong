@@ -26,15 +26,18 @@ public class ArticleImage {
 
 	private int imageSetNum;
 
+	private String fileExtension;
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JsonBackReference
 	@JoinColumn(name = "articleId")
 	private Article article;
 
-	public void updateArticleImg(String imageOriginName, String imageSavedName, String imageSavedPath){
+	public void updateArticleImg(String imageOriginName, String imageSavedName, String imageSavedPath , String fileExtension){
 		this.imageOriginName = imageOriginName;
 		this.imageSavedName = imageSavedName;
 		this.imageSavedPath = imageSavedPath;
+		this.fileExtension = fileExtension;
 	}
 
 	private static ModelMapper modelMapper = new ModelMapper();

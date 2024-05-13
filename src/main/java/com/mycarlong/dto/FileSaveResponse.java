@@ -12,6 +12,7 @@ public class FileSaveResponse {
 	private String fileUploadFullUrl;
 	private String savedUserName;
 	private String associatedArticleTitle;
+	private String fileExtension;
 
 
 }

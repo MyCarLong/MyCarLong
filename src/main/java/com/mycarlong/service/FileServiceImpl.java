@@ -68,6 +68,7 @@ public class FileServiceImpl implements FileService{
 					.fileUploadFullUrl(fileUploadFullUrl)
 					.savedUserName(author)
 					.associatedArticleTitle(title)
+					.fileExtension(extension)
 					.build();
 
 
@@ -105,6 +106,7 @@ public class FileServiceImpl implements FileService{
 					.fileUploadFullUrl(fileUploadFullUrl)
 					.savedUserName(author)
 					.associatedArticleTitle(title)
+					.fileExtension(extension)
 					.build();
 			return "success";
 		} catch (Exception e) {

@@ -1,6 +1,7 @@
 package com.mycarlong.service;
 
 
+import com.mycarlong.dto.ArticleImageDto;
 import com.mycarlong.dto.FileSaveResponse;
 import com.mycarlong.entity.Article;
 import com.mycarlong.entity.ArticleImage;
@@ -49,6 +50,7 @@ public class ArticleImageServiceImpl implements ArticleImageService {
 					FileSaveResponse temp  = (FileSaveResponse) imgSaveResult.getBody();
 					imageSavedName = temp.getFileSavedName();
 					imageSavedPath = temp.getFileUploadFullUrl();
+					String fileExtension = temp.getFileExtension();
 					log.info("imageSavedName: {} \n imageSavedPath: {} ",imageSavedName, imageSavedPath);
 
 					ArticleImage articleImg = ArticleImage.builder()
@@ -57,6 +59,7 @@ public class ArticleImageServiceImpl implements ArticleImageService {
 							.imageSavedPath(imageSavedPath)
 							.imageSetNum(Integer.parseInt(fileIndex))
 							.article(article)
+							.fileExtension(fileExtension)
 							.build();
 
 					articleImageRepository.save(articleImg);
@@ -92,8 +95,9 @@ public class ArticleImageServiceImpl implements ArticleImageService {
 							FileSaveResponse temp  = (FileSaveResponse) imgSaveResult.getBody();
 							String imageSavedName = temp.getFileSavedName();
 							String imageSavedPath = temp.getFileUploadFullUrl();
+							String fileExtension = temp.getFileExtension();
 							//log.info("imageSavedName: {} \n imageSavedPath: {} ",imageSavedName, imageSavedPath);
-							savedArticleImg.updateArticleImg(oriImgName, imageSavedName, imageSavedPath);
+							savedArticleImg.updateArticleImg(oriImgName, imageSavedName, imageSavedPath,fileExtension);
 						}
 
 
@@ -103,6 +107,14 @@ public class ArticleImageServiceImpl implements ArticleImageService {
 				log.warn(e.getMessage());
 			}
 			return fileIndex;
+		}
+
+		/**
+		 * return File saved Name
+		 * */
+		public ArticleImageDto findImageByName(String imageSavedName) {
+			ArticleImage image = articleImageRepository.findByImageSavedName(imageSavedName);
+			return ArticleImageDto.of(image);
 		}
 
 
