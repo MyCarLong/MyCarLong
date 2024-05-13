@@ -1,6 +1,8 @@
-package com.mycarlong.config;
+package com.mycarlong.exception;
 
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,5 +15,13 @@ public class CustomBoardException extends RuntimeException {
 		super(message, cause);
 		this.message = message;
 		this.cause = cause;
+	}
+
+	//Response DTO
+	@Data
+	@AllArgsConstructor
+	public static class Response {
+		private String code;
+		private String msg;
 	}
 }

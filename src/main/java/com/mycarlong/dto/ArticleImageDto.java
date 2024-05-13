@@ -7,14 +7,13 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.web.multipart.MultipartFile;
 
 @Getter
 @Builder
 @AllArgsConstructor
 @RequiredArgsConstructor
 public class ArticleImageDto {
-	private Long id;
+	private Long imageId;
 
 	private String imageOriginName;
 
@@ -26,9 +25,18 @@ public class ArticleImageDto {
 
 	private Long articleId;
 
-	private MultipartFile imgFile;
+//	private MultipartFile imgFile;
 
 	public static ArticleImageDto of(ArticleImage articleImg) {
-		return modelMapper.map(articleImg, ArticleImageDto.class);
+		ArticleImageDto dto = ArticleImageDto.builder()
+				.imageId(articleImg.getId())
+				.imageOriginName(articleImg.getImageOriginName())
+				.imageSavedName(articleImg.getImageSavedName())
+				.imageSavedPath(articleImg.getImageSavedPath())
+				.articleId(articleImg.getArticle().getId())
+				.build();
+
+		return dto;
+
 	}
 }

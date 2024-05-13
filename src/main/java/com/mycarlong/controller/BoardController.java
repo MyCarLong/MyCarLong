@@ -1,10 +1,10 @@
 package com.mycarlong.controller;
 
 
-import com.mycarlong.config.BoardExceptionList;
-import com.mycarlong.dto.ArticleDto;
+import com.mycarlong.exception.*;
+import com.mycarlong.dto.ArticleFormDto;
 import com.mycarlong.dto.BoardResponseEntity;
-import com.mycarlong.dto.ReplyDto;
+import com.mycarlong.dto.ReplyFormDto;
 import com.mycarlong.service.ArticleServiceImpl;
 import com.mycarlong.service.ReplyServiceImpl;
 import com.mycarlong.utils.FileNameUtil;
@@ -14,7 +14,6 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
@@ -25,6 +24,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -105,15 +105,15 @@ public class BoardController {
 		author = FileNameUtil.sanitizeFileName(author);
 		category = FileNameUtil.sanitizeFileName(category);
 
-		ArticleDto articleDto = ArticleDto.builder()
+		ArticleFormDto articleDto = ArticleFormDto.builder()
 				.title(title)
 				.content(content)
 				.author(author)
 				.category(category)
-				.imgFileList(imgFileList)
+				.articleImgList(imgFileList)
 				.build();
-		logger.info("articleDto {} , imgFileList{}", articleDto, articleDto.getImgFileList()); //imgFileList);
-		articleService.registArticle(articleDto, articleDto.getImgFileList());//imgFileList); //file upload contains
+		logger.info("articleDto {} , imgFileList{}", articleDto, articleDto.getArticleImgList()); //imgFileList);
+		articleService.registArticle(articleDto, articleDto.getArticleImgList());//imgFileList); //file upload contains
 		// in articleService;
 		BoardResponseEntity responseEntity = BoardResponseEntity.builder()
 				.status(HttpStatus.OK)
@@ -126,7 +126,7 @@ public class BoardController {
 	@DeleteMapping("/article/{articleId}")
 	public ResponseEntity<BoardResponseEntity> deleteArticle(
 			@Parameter(description = "ID of the article to delete")
-			@PathVariable Long articleId, ArticleDto articleDto) {
+			@PathVariable Long articleId, ArticleFormDto articleDto) {
 		articleService.deleteArticle(articleId, articleDto);
 		BoardResponseEntity responseEntity = BoardResponseEntity.builder()
 				.status(HttpStatus.OK)
@@ -140,7 +140,7 @@ public class BoardController {
 			@Parameter(description = "ID of the article to update")
 			@PathVariable Long articleId,
 			@Parameter(description = "Updated article data")
-			@RequestBody ArticleDto articleDto) {
+			@RequestBody ArticleFormDto articleDto) {
 		articleService.modifyArticle(articleId, articleDto);
 		BoardResponseEntity responseEntity = BoardResponseEntity.builder()
 				.status(HttpStatus.OK)
@@ -170,19 +170,77 @@ public class BoardController {
 			@RequestParam("author") String author,
 			@Parameter(description = "Content of the reply")
 			@RequestParam("content") String content) {
-		//@RequestPart ReplyDto replyDto) {
-		ReplyDto replyDto = ReplyDto.builder()
+		//@RequestPart ReplyFormDto replyFormDto) {
+		ReplyFormDto replyFormDto = ReplyFormDto.builder()
 				.author(author)
 				.content(content)
 				.articleId(articleId)
 				.build();
 
-		replyService.registReply(replyDto);
+		replyService.registReply(replyFormDto);
 		BoardResponseEntity responseEntity = BoardResponseEntity.builder()
 				.status(HttpStatus.OK)
 				.build();
 		return new ResponseEntity<>(responseEntity, responseEntity.getStatus());
 	}//must be preceded POST ARTICLE
+
+	@Operation(summary = "Get registration of an article")
+	@PutMapping("/article/{articleId}/reply/{replyId}")
+	public ResponseEntity<BoardResponseEntity> updateArticleRegistration(
+			@Parameter(description = "ID of the article to get registration for")
+			@PathVariable Long articleId,
+			@Parameter(description = "Content of the reply")
+			@RequestBody ReplyFormDto replyFormDto) {
+		replyService.modifyReply(articleId,replyFormDto);
+		BoardResponseEntity responseEntity = BoardResponseEntity.builder()
+				.status(HttpStatus.OK)
+				.build();
+		return new ResponseEntity<>(responseEntity, responseEntity.getStatus());
+	}
+
+	@Operation(summary = "Get registration of an article")
+	@DeleteMapping("/article/{articleId}/reply/{replyId}")
+	public ResponseEntity<BoardResponseEntity> deleteReplyFromAritcle(
+			@Parameter(description = "ID of the reply to  Delete for")
+			@PathVariable Long articleId,
+			@PathVariable Long replyId) {
+		replyService.deleteReply(articleId,replyId);
+		BoardResponseEntity responseEntity = BoardResponseEntity.builder()
+				.status(HttpStatus.OK)
+				.build();
+		return new ResponseEntity<>(responseEntity, responseEntity.getStatus());
+	}
+
+
+
+	@ExceptionHandler(DatabaseAccessException.class)
+	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+	public DatabaseAccessException.Response handleDatabaseAccessException(DatabaseAccessException e) {
+		e.printStackTrace();
+		return new DatabaseAccessException.Response("500", e.getMessage());
+	}
+
+	@ExceptionHandler(DataMismatchException.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	public DataMismatchException.Response handleDataMismatchException(DataMismatchException e) {
+		e.printStackTrace();
+		return new DataMismatchException.Response("400", e.getMessage());
+	}
+
+	@ExceptionHandler(AuthorizationException.class)
+	@ResponseStatus(HttpStatus.UNAUTHORIZED)
+	public AuthorizationException.Response handleAuthorizationException(AuthorizationException e) {
+		e.printStackTrace();
+		return new AuthorizationException.Response("401", e.getMessage());
+	}
+
+	@ExceptionHandler(FileUploadException.class)
+	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+	public FileUploadException.Response handleFileUploadException(FileUploadException e) {
+		e.printStackTrace();
+		return new FileUploadException.Response("500", e.getMessage());
+	}
+
 
 
 }

@@ -1,7 +1,9 @@
 package com.mycarlong.service;
 
-import com.mycarlong.config.BoardExceptionList;
+import com.mycarlong.dto.ArticleImageDto;
+import com.mycarlong.exception.*;
 import com.mycarlong.dto.ArticleDto;
+import com.mycarlong.dto.ArticleFormDto;
 import com.mycarlong.entity.Article;
 import com.mycarlong.entity.ArticleImage;
 import com.mycarlong.repository.ArticleImageRepository;
@@ -39,12 +41,33 @@ public class ArticleServiceImpl implements ArticleService {
 	@Override
 	public List<ArticleDto> findAllArticle() {
 		try {
+			//article 리스트를 불러온다
 			List<Article> articleList = articleRepository.findAll();
-			return articleList.stream().map(ArticleDto::of).collect(Collectors.toList());
+
+			//article 리스트를 article DTO로 변환한다.
+			List<ArticleDto> articleDtoList = articleList.stream().map(ArticleDto::of).toList();
+
+			//img List 를 불러온다
+			for (ArticleDto articleDto : articleDtoList) {
+				for (Article article : articleList) {
+					List<ArticleImage> articleImages = article.getArticleImageList();
+					articleDto.setArticleImageList(articleImages.stream().map(ArticleImageDto::of).toList());
+				}
+			}
+			//변환한 articld DTO list 의 각각 dto에 이미지 DTO 리스트를 set 한다
+
+
+			return articleDtoList;
+
+//
+//			//			return articleList.stream().map(ArticleDto::of).collect(Collectors.toList());
+//			//TODO : article DTO에 이미지DTO 추가해서 반환하기 작업 끝 24-05-13 13:10 여기 다음부터 작업할것.
+//			return imageDtoInjection(articleList, articleDtoList);
 		} catch (Exception e) {
-			throw new BoardExceptionList.DatabaseAccessException("데이터베이스 접근 에러발생",e);
+			throw new DatabaseAccessException("데이터베이스 접근 에러발생", e);
 		}
 	}
+
 
 	@Override
 	public List<ArticleDto> findFiftyArticldOrderByDesc() {
@@ -53,7 +76,7 @@ public class ArticleServiceImpl implements ArticleService {
 
 	@Override
 	@Transactional
-	public void registArticle(ArticleDto articleDto, List<MultipartFile> imgFileList) {
+	public void registArticle(ArticleFormDto articleDto, List<MultipartFile> imgFileList) {
 		try {
 			Article article = articleDto.createArticle();
 
@@ -65,12 +88,12 @@ public class ArticleServiceImpl implements ArticleService {
 
 
 				articleImageService.saveArticleImg(article, String.valueOf(i) , imgFileList.get(i));
-				article.getThisImgList().add(articleImage);
+//				article.getThisImgList().add(articleImage);
 			}
 //			article.setThisImgList(articleImageList);
 			articleRepository.save(article);
 		} catch (Exception e) {
-			throw new BoardExceptionList.FileUploadException("File Upload 혹은 이미지 등록 중 에러발생",e);
+			throw new FileUploadException("File Upload 혹은 이미지 등록 중 에러발생", e);
 		}
 
 	}
@@ -79,15 +102,17 @@ public class ArticleServiceImpl implements ArticleService {
 	public ArticleDto viewArticleDetail(Long articleId) {
 		Article article = articleRepository.findById(articleId).orElse(null); //Optional 객체로 반환하기 때문에 orElse 추가
 		if (article == null) {
-			throw new BoardExceptionList.DataMismatchException("제공된 Article ID에 해당하는 게시글을 찾을 수 없습니다.", null);
+			throw new DataMismatchException("제공된 Article ID에 해당하는 게시글을 찾을 수 없습니다.", null);
 		}
-		return ArticleDto.of(article);
+		ArticleDto articleDto = ArticleDto.of(article);  //dto 생성
+		articleDto.setArticleImageList(article.getArticleImageList().stream().map(ArticleImageDto::of).toList()); // dto 에 이미지리스트 삽입
+		return articleDto;
 	}
 
 
 
 	@Override
-	public void modifyArticle(Long articleId, ArticleDto articleDto) {
+	public void modifyArticle(Long articleId, ArticleFormDto articleDto) {
 		Article existingArticle = articleRepository.findById(articleId).orElse(null); // 게시글 조회
 		verifyUser(articleDto);
 		// 2. 데이터 수정
@@ -98,11 +123,11 @@ public class ArticleServiceImpl implements ArticleService {
 	}
 
 	@Override
-	public void deleteArticle(Long articleId, ArticleDto articleDto) {
+	public void deleteArticle(Long articleId, ArticleFormDto articleDto) {
 		verifyUser(articleDto);
 		Article existingArticle = articleRepository.findById(articleId).orElse(null); // 게시글 조회
 		if (existingArticle == null) {
-			throw new BoardExceptionList.DataMismatchException("제공된 Article ID에 해당하는 게시글을 찾을 수 없어 삭제가 완료되지않았습니다..", null);
+			throw new DataMismatchException("제공된 Article ID에 해당하는 게시글을 찾을 수 없어 삭제가 완료되지않았습니다..", null);
 		}
 		articleRepository.deleteById(articleId);
 	}
@@ -112,23 +137,39 @@ public class ArticleServiceImpl implements ArticleService {
 	*
 	* 요청자를 확인하는 함수 verifyUser()
 	* */
-	private void verifyUser(ArticleDto articleDto) {
+	private void verifyUser(ArticleFormDto articleDto) {
 		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		if (principal instanceof UserDetails) {
 			String username = ((UserDetails) principal).getUsername();
 			if (!username.equals(articleDto.getAuthor())) {
-				throw new BoardExceptionList.AuthorizationException("게시글에 대한 권한이 없는 유저입니다..", null);
+				throw new AuthorizationException("게시글에 대한 권한이 없는 유저입니다..", null);
 			}
 		}
 	}
 	@Override
 	public List<ArticleDto> findByCategory(String category) {
 		List<Article> articleList = articleRepository.findByCategoryOrderByRegTimeDesc(category);
+		List<ArticleDto> articleDtoList = new ArrayList<>();
 		if (articleList == null) {
-			throw new BoardExceptionList.DataMismatchException("제공된 category 에 해당하는 데이터를 찾을 수 없습니다. 파라미터 형식 'model-year'", null);
+			throw new DataMismatchException("제공된 category 에 해당하는 데이터를 찾을 수 없습니다. 파라미터 형식 'model-year'", null);
 		}
-		return pagingArticleByCategory(20,category);
+
+		return pagingArticleByCategory(20,category , articleList, articleDtoList);
 		//return articleList.stream().map(ArticleDto::of).collect(Collectors.toList());
+	}
+
+	private List<ArticleDto> imageDtoInjection(List<Article> articleList, List<ArticleDto> articleDtoList) {
+		for (Article article : articleList) {
+			List<ArticleImage> articleImages = articleImageRepository.findByArticleIdOrderByImageSetNum(article.getId());
+			List<ArticleImageDto> imageDtos = articleImages.stream().map(ArticleImageDto::of).toList();
+
+			ArticleDto articleDto = ArticleDto.of(article);    // convert
+			articleDto.setArticleImageList(imageDtos);    // converted image dto set
+			articleDtoList.add(articleDto);    // add dto in dto list
+
+			logger.info("articleDtoList List Img toList: {}", articleDtoList.get(0).getArticleImageList());
+		}
+		return articleDtoList;
 	}
 
 
@@ -138,11 +179,15 @@ public class ArticleServiceImpl implements ArticleService {
 		List<Article> articles = page.getContent();
 		return  articles.stream().map(ArticleDto::of).collect(Collectors.toList());
 		}
-	private  List<ArticleDto> pagingArticleByCategory(int size, String category) {
-			PageRequest pageRequests = PageRequest.of(0, size, Sort.by("id").descending());
+
+
+	private  List<ArticleDto> pagingArticleByCategory(int size, String category ,
+	                                                  List<Article>  articleList,  List<ArticleDto> articleDtoList) {
+			PageRequest pageRequests = PageRequest.of(0, size, Sort.by("regTime").descending());
 			Page<Article> pages = articleRepository.findByCategoryOrderByRegTimeDesc(pageRequests , category);
+
 			List<Article> articles = pages.getContent();
-			return  articles.stream().map(ArticleDto::of).collect(Collectors.toList());
+			return  imageDtoInjection(articles,articleDtoList); // articles.stream().map(ArticleDto::of).collect(Collectors.toList());
 		}
 	}
 

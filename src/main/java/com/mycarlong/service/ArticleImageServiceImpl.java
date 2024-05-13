@@ -75,7 +75,7 @@ public class ArticleImageServiceImpl implements ArticleImageService {
 		public String updateItemImg(Article article, String fileIndex, MultipartFile articleImgFile) throws Exception {
 			try {
 					if (!articleImgFile.isEmpty()) {
-						Long articleImgId = article.getThisImgList().get(Integer.parseInt(fileIndex)).getId();
+						Long articleImgId = article.getArticleImageList().get(Integer.parseInt(fileIndex)).getId();
 						ArticleImage savedArticleImg = articleImageRepository.findById(articleImgId)
 								.orElseThrow(EntityNotFoundException::new);
 

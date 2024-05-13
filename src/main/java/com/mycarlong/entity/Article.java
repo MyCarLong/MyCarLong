@@ -3,6 +3,7 @@ package com.mycarlong.entity;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.mycarlong.dto.ArticleDto;
+import com.mycarlong.dto.ArticleFormDto;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
@@ -54,12 +55,12 @@ public class Article extends BaseTimeEntity {
 	@Builder.Default
 	@JsonManagedReference
 	@OneToMany(mappedBy = "article" ,  cascade = CascadeType.REMOVE, orphanRemoval = true)
-	private List<ArticleImage>  thisImgList = new ArrayList<>();
+	private List<ArticleImage>  articleImageList = new ArrayList<>();
 
 	@Builder.Default
 	@JsonManagedReference
 	@OneToMany(mappedBy = "article" ,  cascade = CascadeType.REMOVE, orphanRemoval = true)
-	private List<Reply> thisReplyList = new ArrayList<>();
+	private List<Reply> articleReplyList = new ArrayList<>();
 
 
 	/**
@@ -79,7 +80,7 @@ public class Article extends BaseTimeEntity {
 		}
 		return this.hasRelplyFlag = flag;
 	}
-	public void updateThis(ArticleDto articleDto){
+	public void updateThis(ArticleFormDto articleDto){
 		this.title = articleDto.getTitle();
 		this.content = articleDto.getContent();
 	}

@@ -58,7 +58,6 @@ public class FileServiceImpl implements FileService{
 //		String savedFileName = title + "_" + author + "_" +fileIndex+"_"+ uuid + extension;
 		String fileUploadFullUrl = uploadPath + savedFileName;  // 'file:' 접두사 제거
 
-		log.info("생성된 파일 업로드 경로입니다: {}", fileUploadFullUrl);
 
 		try (FileOutputStream fos = new FileOutputStream(fileUploadFullUrl)) {
 			fos.write(fileData);

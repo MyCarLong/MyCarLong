@@ -1,19 +1,17 @@
 package com.mycarlong.service;
 
-import com.mycarlong.dto.ReplyDto;
+import com.mycarlong.dto.ReplyFormDto;
 
 import java.util.List;
 
 public interface ReplyService {
 
 	//Reply Part
-	void registReply(ReplyDto replyDto);
+	void registReply(ReplyFormDto replyFormDto);
 
+	List<ReplyFormDto> getAllReply(Long articleId);//WHEN article detail view request, All reply read.
 
+	void modifyReply(Long articleId, ReplyFormDto replyFormDto);
 
-	List<ReplyDto> getAllReply(Long articleId);//WHEN article detail view request, All reply read.
-
-	void modifyReply();
-
-	void deleteReply();
+	void deleteReply(Long articleId,Long replyId);
 }

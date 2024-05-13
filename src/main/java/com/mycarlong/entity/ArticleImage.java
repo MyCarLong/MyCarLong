@@ -2,8 +2,10 @@ package com.mycarlong.entity;
 
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.mycarlong.dto.ArticleDto;
 import jakarta.persistence.*;
 import lombok.*;
+import org.modelmapper.ModelMapper;
 
 @Entity
 @Getter @Setter
@@ -35,7 +37,12 @@ public class ArticleImage {
 		this.imageSavedPath = imageSavedPath;
 	}
 
-//	//articleId로 일치하는 Img 찾기
+	private static ModelMapper modelMapper = new ModelMapper();
+	public static ArticleDto of(Article article){
+		return modelMapper.map(article, ArticleDto.class);
+	}
+
+	//	//articleId로 일치하는 Img 찾기
 //	public String returnImgPath (Long articleId) {
 //		String imgPath;
 //		if (this.articleId.getId().equals(articleId)) {

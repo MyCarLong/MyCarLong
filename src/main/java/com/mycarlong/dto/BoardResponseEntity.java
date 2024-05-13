@@ -13,11 +13,11 @@ import java.util.Map;
 @AllArgsConstructor
 @RequiredArgsConstructor
 public class BoardResponseEntity {
-	@Builder.Default
-	private List<ArticleDto> articleList = new ArrayList<>();
-	private Map<String, String> errorDetails;
-	private ArticleDto article;
-	@Builder.Default
-	private List<ReplyDto> replyDtoList = new ArrayList<>();
 	private HttpStatus status;
+	private List<ArticleDto> articleList;
+	private ArticleDto article;
+//	@Builder.Default
+//	private List<ReplyFormDto> replyFormDtoList = new ArrayList<>();
+	private Map<String, String> errorDetails;
+
 }

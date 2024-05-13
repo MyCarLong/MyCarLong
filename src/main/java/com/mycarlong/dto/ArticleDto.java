@@ -1,12 +1,9 @@
 package com.mycarlong.dto;
 
 import com.mycarlong.entity.Article;
-import com.mycarlong.entity.ArticleImage;
-import com.mycarlong.entity.Reply;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import org.modelmapper.ModelMapper;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 public class ArticleDto {
 
-	private Long id;
+	private Long articleId;
 	@NotBlank(message = "제목은 비워둘 수 없습니다.")
 	private String title;
 
@@ -34,18 +31,13 @@ public class ArticleDto {
 	private int hasReply;
 
 	@Builder.Default
-	private List<MultipartFile> imgFileList = new ArrayList<>();
+	private List<ArticleImageDto> articleImageList = new ArrayList<>();
 	@Builder.Default
-	private List<ArticleImage> articleImgList = new ArrayList<>();
-	@Builder.Default
-	private List<Reply> replyList = new ArrayList<>();
-
-	public Article createArticle(){
-		return modelMapper.map(this, Article.class);
-	}
+	private List<ReplyFormDto> articleReplyList = new ArrayList<>();
 
 	private static ModelMapper modelMapper = new ModelMapper();
 	public static ArticleDto of(Article article){
+
 		return modelMapper.map(article, ArticleDto.class);
 	}
 

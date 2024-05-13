@@ -1,6 +1,8 @@
 package com.mycarlong.service;
 
 import com.mycarlong.dto.ArticleDto;
+import com.mycarlong.dto.ArticleFormDto;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -13,11 +15,11 @@ public interface ArticleService {
 
 	List<ArticleDto> findFiftyArticldOrderByDesc();
 
-	void registArticle(ArticleDto articleDto, List<MultipartFile> multipartFileList) throws IOException;
+	void registArticle(ArticleFormDto articleDto, List<MultipartFile> multipartFileList) throws IOException;
 
-	void modifyArticle(Long articleId, ArticleDto articleDto);
+	void modifyArticle(Long articleId, ArticleFormDto articleDto);
 
-	void deleteArticle(Long articleId, ArticleDto articleDto);
+	void deleteArticle(Long articleId, ArticleFormDto articleDto);
 
 	List<ArticleDto> findByCategory(String category);
 }
