@@ -8,7 +8,9 @@ spring:
     import:
     - boardSetting.yml #  custom properties add
     - S3_Setting.yml #  AWS S3 Upload setting
-
+  profiles:
+    include:
+      -aws
 #  security:
 #    user:
 #      name: test@test.com

@@ -73,6 +73,9 @@ dependencies {
 	implementation 'org.apache.tika:tika-parsers:1.17' //file validation
 	// https://mvnrepository.com/artifact/com.amazonaws/aws-java-sdk-s3
 	implementation group: 'com.amazonaws', name: 'aws-java-sdk-s3', version: '1.12.720'// AWS S3 Multipart File upload
+	// https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-aws
+	implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-aws', version: '2.2.6.RELEASE'
+
 
 	/*End of Use by KGH*/
 
