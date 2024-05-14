@@ -6,46 +6,41 @@ spring:
     name: MyCarLong
   config:
     import:
-    - boardSetting.yml #  custom properties add
-    - S3_Setting.yml #  AWS S3 Upload setting
-  profiles:
-    include:
-      -aws
-#  security:
-#    user:
-#      name: test@test.com
-#      password: 12345
-
+      - envRepo/application-aws.yml
+      - envRepo/application-oauth.properties
+      - envRepo/BoardSetting.yml
+      - envRepo/S3_Setting.yml
   devtools:
     restart:
       enabled: true
-
-  livereload:
-    enabled: true
-
+    livereload:
+      enabled: true
   thymeleaf:
     cache: false
-
-  datasource: # RDS 연동시 수정해야함
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/myCarLong
-    username: root
-    password: 1234
-
   jpa:
     properties:
       hibernate:
         show_sql: true
         format_sql: true
-
+        jdbc:
+          time_zone: Asia/Seoul
+    database-platform: org.hibernate.dialect.MySQL8Dialect
     hibernate:
       ddl-auto: update
-    database-platform: org.hibernate.dialect.MySQL8Dialect
-
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+  datasource: # RDS 연동시 수정해야함
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/myCarLong
+    username: root
+    password: 1234
   servlet:
     multipart:
-      maxFileSize: 20MB
-      maxRequestSize: 100MB
+      maxFileSize: 5MB
+      maxRequestSize: 5MB
+
+jwt:
+  expiration: 3600
 
 logging:
   level:
@@ -60,3 +55,20 @@ springdoc:
     path: /swagger-docs
     disable-swagger-default-url: true
     display-request-duration: true
+
+oauth:
+  kakao:
+    client_id: "${spring.security.oauth2.client.registration.kakao.client-id}"  # REST API 키
+    redirect_uri: "${spring.security.oauth2.client.registration.kakao.redirect-uri}"
+    client_secret: "${spring.security.oauth2.client.registration.kakao.client-secret}" # Client Secret 키
+    scope: "${spring.security.oauth2.client.registration.kakao.scope}"
+  naver:
+    client_id: "${spring.security.oauth2.client.registration.naver.client-id}"
+    redirect_uri: "${spring.security.oauth2.client.registration.naver.redirect-uri}"
+    client_secret: "${spring.security.oauth2.client.registration.naver.client-secret}"
+    scope: "${spring.security.oauth2.client.registration.naver.scope}"
+  google:
+    client_id: "${spring.security.oauth2.client.registration.google.client-id}"
+    redirect_uri: "${spring.security.oauth2.client.registration.google.redirect-uri}"
+    client_secret: "${spring.security.oauth2.client.registration.google.client-secret}"
+    scope: "${spring.security.oauth2.client.registration.google.scope}"
