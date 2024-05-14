@@ -2,7 +2,7 @@ package com.mycarlong.controller;
 
 
 import com.mycarlong.dto.CarInfoDto;
-import com.mycarlong.service.SeleniumService;
+import com.mycarlong.service.SeleniumServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "CrawlerService for Simple Car Info & Photo" , description = "crawling photo & information using selenium library")
 public class seleniumController {
 
-	private final SeleniumService seleniumService;
+	private final SeleniumServiceImpl seleniumService;
 
 	/**
 	 * 특정 자동차 모델의 정보를 가져옵니다.

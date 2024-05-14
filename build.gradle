@@ -29,6 +29,8 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 	implementation 'org.springframework.boot:spring-boot-starter-webflux'
+	implementation 'org.springframework.boot:spring-boot-configuration-processor'
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 
 // Thymeleaf
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
@@ -62,9 +64,26 @@ dependencies {
 // Jsoup
 	implementation group: 'org.jsoup', name: 'jsoup', version: '1.17.2'
 
-// Selenium
-	implementation group: 'org.seleniumhq.selenium', name: 'selenium-java', version: '4.20.0'
 
+	// Selenium
+	implementation 'org.seleniumhq.selenium:selenium-java:4.20.0'
+	implementation 'org.seleniumhq.selenium:selenium-api:4.20.0'
+	implementation 'org.seleniumhq.selenium:selenium-chrome-driver:4.20.0'
+	implementation 'org.seleniumhq.selenium:selenium-chromium-driver:4.20.0'
+	implementation 'org.seleniumhq.selenium:selenium-devtools-v85:4.20.0'
+	implementation 'org.seleniumhq.selenium:selenium-devtools-v122:4.20.0'
+	implementation 'org.seleniumhq.selenium:selenium-devtools-v123:4.20.0'
+	implementation 'org.seleniumhq.selenium:selenium-devtools-v124:4.20.0'
+	implementation 'org.seleniumhq.selenium:selenium-edge-driver:4.20.0'
+	implementation 'org.seleniumhq.selenium:selenium-firefox-driver:4.20.0'
+	implementation 'org.seleniumhq.selenium:selenium-http:4.20.0'
+	implementation 'org.seleniumhq.selenium:selenium-ie-driver:4.20.0'
+	implementation 'org.seleniumhq.selenium:selenium-json:4.20.0'
+	implementation 'org.seleniumhq.selenium:selenium-manager:4.20.0'
+	implementation 'org.seleniumhq.selenium:selenium-os:4.20.0'
+	implementation 'org.seleniumhq.selenium:selenium-remote-driver:4.20.0'
+	implementation 'org.seleniumhq.selenium:selenium-safari-driver:4.20.0'
+	implementation 'org.seleniumhq.selenium:selenium-support:4.20.0'
 // WebDriverManager
 	implementation group: 'io.github.bonigarcia', name: 'webdrivermanager', version: '5.8.0'
 
