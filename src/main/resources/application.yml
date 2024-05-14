@@ -1,36 +1,22 @@
-oauth:
-  kakao:
-    client_id: "${spring.security.oauth2.client.registration.kakao.client-id}"  # REST API 키
-    redirect_uri: "${spring.security.oauth2.client.registration.kakao.redirect-uri}"
-    client_secret: "${spring.security.oauth2.client.registration.kakao.client-secret}" # Client Secret 키
-    scope: "${spring.security.oauth2.client.registration.kakao.scope}"
-
-  naver:
-    client_id: "${spring.security.oauth2.client.registration.naver.client-id}"
-    redirect_uri: "${spring.security.oauth2.client.registration.naver.redirect-uri}"
-    client_secret: "${spring.security.oauth2.client.registration.naver.client-secret}"
-    scope: "${spring.security.oauth2.client.registration.naver.scope}"
-  
-  google:
-    client_id: "${spring.security.oauth2.client.registration.google.client-id}"
-    redirect_uri: "${spring.security.oauth2.client.registration.google.redirect-uri}"
-    client_secret: "${spring.security.oauth2.client.registration.google.client-secret}"
-    scope: "${spring.security.oauth2.client.registration.google.scope}"
-
 server:
   port: 8097
+
 spring:
   application:
-    name: mycarlong-back
+    name: MyCarLong
   config:
-    import: oauthkey.properties
-
-  security:
-    user:
-      name: test@test.com
-      password: 12345
-
-
+    import:
+      - envRepo/application-aws.yml
+      - envRepo/application-oauth.properties
+      - envRepo/BoardSetting.yml
+      - envRepo/S3_Setting.yml
+  devtools:
+    restart:
+      enabled: true
+  livereload:
+    enabled: true
+  thymeleaf:
+    cache: false
   jpa:
     properties:
       hibernate:
@@ -38,20 +24,51 @@ spring:
         format_sql: true
         jdbc:
           time_zone: Asia/Seoul
+    database-platform: org.hibernate.dialect.MySQL8Dialect
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
-
-  datasource:
+  datasource: # RDS 연동시 수정해야함
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/ouath
+    url: jdbc:mysql://localhost:3306/myCarLong
     username: root
     password: 1234
+  servlet:
+    multipart:
+      maxFileSize: 20MB
+      maxRequestSize: 100MB
 
 jwt:
   expiration: 3600
 
+logging:
+  level:
+    org:
+      hibernate:
+        type:
+          descriptor:
+            sql: trace
 
+springdoc:
+  swagger-ui:
+    path: /swagger-docs
+    disable-swagger-default-url: true
+    display-request-duration: true
 
-    
+oauth:
+  kakao:
+    client_id: "${spring.security.oauth2.client.registration.kakao.client-id}"  # REST API 키
+    redirect_uri: "${spring.security.oauth2.client.registration.kakao.redirect-uri}"
+    client_secret: "${spring.security.oauth2.client.registration.kakao.client-secret}" # Client Secret 키
+    scope: "${spring.security.oauth2.client.registration.kakao.scope}"
+  naver:
+    client_id: "${spring.security.oauth2.client.registration.naver.client-id}"
+    redirect_uri: "${spring.security.oauth2.client.registration.naver.redirect-uri}"
+    client_secret: "${spring.security.oauth2.client.registration.naver.client-secret}"
+    scope: "${spring.security.oauth2.client.registration.naver.scope}"
+  google:
+    client_id: "${spring.security.oauth2.client.registration.google.client-id}"
+    redirect_uri: "${spring.security.oauth2.client.registration.google.redirect-uri}"
+    client_secret: "${spring.security.oauth2.client.registration.google.client-secret}"
+    scope: "${spring.security.oauth2.client.registration.google.scope}"
