@@ -4,7 +4,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.mycarlong.oauth.AuthCodeRequestUrlProvider;
-import com.mycarlong.mycarlongback.oauth.OauthServerType;
+import com.mycarlong.oauth.OauthServerType;
 
 import lombok.RequiredArgsConstructor;
 

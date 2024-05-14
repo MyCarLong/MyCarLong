@@ -1,9 +1,8 @@
-package com.mycarlong.config;
+package java.com.mycarlong.config;
 
 
 import java.util.Collections;
 
-import com.mycarlong.service.UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -16,6 +15,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 
 import com.mycarlong.filter.JWTFilter;
+import com.mycarlong.service.CustomOAuth2UserService;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -23,15 +23,15 @@ import jakarta.servlet.http.HttpServletRequest;
 @EnableWebSecurity
 public class SecurityConfig{
 
-    private final UserService userService;
+    private final CustomOAuth2UserService customOAuth2UserService;
     private final CustomSuccessHandler customSuccessHandler;
     private final JWTUtil jwtUtil;
 
     private final JWTFilter jwtFIlter;
 
 
-    public SecurityConfig(UserService userService, CustomSuccessHandler customSuccessHandler, JWTUtil jwtUtil, JWTFilter jwtFIlter) {
-        this.userService = userService;
+    public SecurityConfig(CustomOAuth2UserService customOAuth2UserService, CustomSuccessHandler customSuccessHandler, JWTUtil jwtUtil, JWTFilter jwtFIlter) {
+        this.customOAuth2UserService = customOAuth2UserService;
         this.customSuccessHandler = customSuccessHandler;
         this.jwtUtil = jwtUtil;
         this.jwtFIlter = jwtFIlter;
@@ -39,7 +39,7 @@ public class SecurityConfig{
 
     // SecurityFilterChain을 생성하는 메서드입니다.
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http, UserService userService) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
         // CORS 설정
         http.cors(corsCustomizer -> corsCustomizer.configurationSource(new CorsConfigurationSource() {
@@ -60,24 +60,27 @@ public class SecurityConfig{
         // CSRF 비활성화
         http.csrf((csrf) -> csrf.disable());
 
+        // Form 기반 로그인 비활성화
+        http.formLogin((formLogin) -> formLogin.disable());
+
         // HTTP Basic 인증 비활성화
         http.httpBasic((httpBasic) -> httpBasic.disable());
 
         // JWT 필터 추가
         http.addFilterAfter(new JWTFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
         http.addFilterAfter(new JWTFilter(jwtUtil), OAuth2LoginAuthenticationFilter.class);
-    /*    // OAuth2 설정
+        // OAuth2 설정
         http.oauth2Login((oauth2) -> oauth2
                         .userInfoEndpoint((userInfoEndpointConfig) -> userInfoEndpointConfig
                                 .userService(customOAuth2UserService))
                         .successHandler(customSuccessHandler)
 //                .defaultSuccessUrl("/testCookie")
-        );*/
+        );
 
         // 경로별 인가 작업
         http.authorizeHttpRequests((authorizeRequests) -> authorizeRequests
-                .requestMatchers("/","/aboutus").permitAll() // 루트 경로는 모두 허용
-                .requestMatchers("/chatapp","/nearby","/vehicles").hasRole("USER") // "/my" 경로는 USER 권한을 가진 사용자만 허용
+                .requestMatchers("/").permitAll() // 루트 경로는 모두 허용
+                .requestMatchers("/my")./*hasRole("USER")*/permitAll() // "/my" 경로는 USER 권한을 가진 사용자만 허용
                 .anyRequest().permitAll() // 나머지 요청은 인증된 사용자만 허용
         );
 
