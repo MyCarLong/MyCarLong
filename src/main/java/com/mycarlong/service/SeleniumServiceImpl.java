@@ -5,6 +5,10 @@ import com.mycarlong.config.CustomException;
 import com.mycarlong.dto.CarInfoDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -51,10 +55,12 @@ public class SeleniumServiceImpl extends CustomException implements SeleniumServ
 			// 웹 페이지에 연결
 			driver.get(generated.get("targetURL"));
 			WebDriverWait wait = new WebDriverWait(driver,WAIT_DURATION);
-			// CSS 선택자를 사용하여 요소 대기
-			WebElement element = wait.until(
-					ExpectedConditions.visibilityOfElementLocated(
-							By.cssSelector("li.item._item[data-img-url][data-id='1']")));
+			//			// CSS 선택자를 사용하여 요소 대기
+			//			WebElement element = wait.until(
+			//					ExpectedConditions.visibilityOfElementLocated(
+			//							By.cssSelector("li.item._item[data-id='1'][data-no='1']")));
+			WebElement element = wait.until(ExpectedConditions.presenceOfElementLocated(
+					By.cssSelector("ul.grid_box._exterior._list >li.item._item[data-img-url][data-id='1']")));
 			if (element == null) {
 				throw new PageLoadTimeoutException("Photo Box Element Not Found");
 			}

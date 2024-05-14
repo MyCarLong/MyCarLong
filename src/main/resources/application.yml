@@ -13,8 +13,8 @@ spring:
   devtools:
     restart:
       enabled: true
-  livereload:
-    enabled: true
+    livereload:
+      enabled: true
   thymeleaf:
     cache: false
   jpa:
@@ -36,8 +36,8 @@ spring:
     password: 1234
   servlet:
     multipart:
-      maxFileSize: 20MB
-      maxRequestSize: 100MB
+      maxFileSize: 5MB
+      maxRequestSize: 5MB
 
 jwt:
   expiration: 3600
