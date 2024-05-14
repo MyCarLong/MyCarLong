@@ -34,7 +34,7 @@ public class SeleniumServiceImpl extends CustomException implements SeleniumServ
 	private Logger logger = LoggerFactory.getLogger(SeleniumServiceImpl.class);
 	private static final String DEFAULT_SEARCH_URL = "https://search.naver.com/search" +
 			".naver?where=nexearch&sm=top_hty&fbm=0&ie=utf8&query=";  // 네이버 검색 기본 URL을 잡는다.
-	private static final Duration WAIT_DURATION = Duration.ofMillis(5000);
+	private static final Duration WAIT_DURATION = Duration.ofMillis(1000);
 
 	private final WebDriverService webDriverService;
 
@@ -54,7 +54,7 @@ public class SeleniumServiceImpl extends CustomException implements SeleniumServ
 			// CSS 선택자를 사용하여 요소 대기
 			WebElement element = wait.until(
 					ExpectedConditions.visibilityOfElementLocated(
-							By.cssSelector("li[data-img-url][data-id='1']")));
+							By.cssSelector("li.item._item[data-img-url][data-id='1']")));
 			if (element == null) {
 				throw new PageLoadTimeoutException("Photo Box Element Not Found");
 			}

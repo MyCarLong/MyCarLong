@@ -1,5 +1,7 @@
 package com.mycarlong.naver;
 
+import com.mycarlong.kakao.KakaoOauthConfig;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -10,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
+@EnableConfigurationProperties(NaverOauthConfig.class)
 public class NaverAuthCodeRequestUrlProvider implements AuthCodeRequestUrlProvider {
 
     private final NaverOauthConfig naverOauthConfig;

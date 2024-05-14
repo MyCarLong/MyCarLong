@@ -1,5 +1,6 @@
 package com.mycarlong.google;
 
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -10,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
+@EnableConfigurationProperties(GoogleOauthConfig.class)
 public class GoogleAuthCodeRequestUrlProvider implements AuthCodeRequestUrlProvider {
 
   private final GoogleOauthConfig googleOauthConfig;

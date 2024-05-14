@@ -1,6 +1,8 @@
 package com.mycarlong.kakao;
 
 
+import com.mycarlong.google.GoogleOauthConfig;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -11,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
+@EnableConfigurationProperties(KakaoOauthConfig.class)
 public class KakaoAuthCodeRequestUrlProvider implements AuthCodeRequestUrlProvider {
 
     private final KakaoOauthConfig kakaoOauthConfig;
