@@ -36,14 +36,12 @@ public class seleniumController {
 	@Operation(summary = "Get car information", description = "Get the information of a specific car model.")
 	@ApiResponses(value = {
    	  @ApiResponse(responseCode = "200", description = "Successfully retrieved data"),
-    	  @ApiResponse(responseCode = "404", description = "Parameters (Model / Year) not found", response = CustomException.ParameterNotFoundException.class),
-    	  @ApiResponse(responseCode = "500", description = "WebDriver initialization failed", response = CustomException.WebDriverInitializationException.class),
-   	  @ApiResponse(responseCode = "404", description = "Element not found", response = CustomException.ElementNotFoundException.class),
-    	  @ApiResponse(responseCode = "408", description = "Page load timeout", response = CustomException.PageLoadTimeoutException.class),
-    	  @ApiResponse(responseCode = "404", description = "Target not found", response = CustomException.TargetNotFoundException.class),
-    	  @ApiResponse(responseCode = "500", description = "Error during Merging DATA", response = CustomException.MergingDataException.class),
-    	  @ApiResponse(responseCode = "500", description = "Error during Merging DATA", response = CustomException.InformationNotFoundException.class)
-	})
+    	  @ApiResponse(responseCode = "404", description = "Parameters (Model / Year) not found"),
+	  @ApiResponse(responseCode = "500", description = "WebDriver initialization failed"),
+   	  @ApiResponse(responseCode = "404", description = "Element not found"),
+    	  @ApiResponse(responseCode = "408", description = "Page load timeout"),
+    	  @ApiResponse(responseCode = "404", description = "Target not found"),
+    	  @ApiResponse(responseCode = "500", description = "Error during Merging DATA")})
 	@GetMapping("/car/info")
 	public CarInfoDto getInfo(@RequestParam("year")  @Parameter(description = "The year of the car model.") String year,
 	                          @RequestParam("model")  @Parameter(description = "The name of the car model.") String model) {
