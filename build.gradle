@@ -43,16 +43,14 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect:3.3.0'
 
-// Swagger
 	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6:3.1.2.RELEASE'
 	implementation 'org.springframework.boot:spring-boot-starter'
 	implementation 'org.springframework.boot:spring-boot-starter-logging'
-	//Mapper
-	implementation 'org.modelmapper:modelmapper:3.2.0'
+
 	//Swagger
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.4'
 
-// Lombok
+
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	testImplementation 'org.springframework.security:spring-security-test:6.2.3'
 
@@ -60,10 +58,7 @@ dependencies {
 	// https://mvnrepository.com/artifact/org.apache.tika/tika-core
 	implementation group: 'org.apache.tika', name: 'tika-core', version: '2.9.1'
 
-
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.springframework.boot:spring-boot-starter-security:3.2.4'
-
+	// Lombok
 	implementation 'org.projectlombok:lombok'
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
