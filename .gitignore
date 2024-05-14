@@ -6,10 +6,13 @@
 HELP.md
 ReadMe.md
 
-boardSetting.yml
+envRepo/
+application-aws.yml
+application-board.yml
+application-oauth.properties
+BoardSetting.yml
+focal-time-421105-cf8b5143fae8.json
 S3_Setting.yml
-application-API-KEY.properties
-application.properties
 
 # IDE 설정 폴더 (STS)
 .apt_generated
