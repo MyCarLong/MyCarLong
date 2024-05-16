@@ -1,6 +1,7 @@
 package com.mycarlong.dto;
 
 import com.mycarlong.entity.Article;
+import com.mycarlong.entity.BaseEntity;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import org.modelmapper.ModelMapper;
@@ -13,7 +14,7 @@ import java.util.List;
 @Builder
 @RequiredArgsConstructor
 @AllArgsConstructor
-public class ArticleDto {
+public class ArticleDto extends BaseEntity {
 
 	private Long articleId;
 	@NotBlank(message = "제목은 비워둘 수 없습니다.")

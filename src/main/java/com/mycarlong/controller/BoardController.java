@@ -24,7 +24,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.ws.rs.core.Response;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -39,7 +39,7 @@ public class BoardController {
 	private final ArticleServiceImpl articleService;
 	private final ReplyServiceImpl replyService;
 
-	private Logger logger = LoggerFactory.getLogger(BoardController.class);
+	private final Logger logger = LoggerFactory.getLogger(BoardController.class);
 
 
 	@Operation(summary = "Get a list of articles")
@@ -53,12 +53,12 @@ public class BoardController {
 	}
 
 	@Operation(summary = "Get a list of articles filtered by category")
-	@GetMapping("/article?category={category}")
+	@GetMapping("/article/category")
 	public ResponseEntity<BoardResponseEntity> viewArticleListFilteredModel(
 			@Parameter(description = "Category to filter by")
 			@RequestParam String category) {
 		//		String category = model+"-"+year;
-		String[] model = category.split("-");
+		String[] model = category.split("_");
 		BoardResponseEntity responseEntity = BoardResponseEntity.builder().build();
 		if (articleService.findByCategory(category) != null) {
 			responseEntity.setArticleList(articleService.findByCategory(category));
@@ -94,10 +94,10 @@ public class BoardController {
 			@ApiResponse(responseCode = "400", description = "Invalid input data",
 					content = @Content)})
 	@PostMapping(value = "/article", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-	public ResponseEntity<BoardResponseEntity> registArticle(@RequestParam("title") String title,
-	                                                         @RequestParam("content") String content,
-	                                                         @RequestParam("author") String author,
-	                                                         @RequestParam("category") String category,
+	public ResponseEntity<BoardResponseEntity> registArticle(@RequestPart("title") String title,
+	                                                         @RequestPart("content") String content,
+	                                                         @RequestPart("author") String author,
+	                                                         @RequestPart("category") String category,
 	                                                         @RequestPart("imgFileList") List<MultipartFile> imgFileList) throws IOException {
 		// ArticleDto articleDto) throws IOException { //,@RequestPart("imgFileList") List<MultipartFile> imgFileList
 		title = FileNameUtil.sanitizeFileName(title);
@@ -154,9 +154,10 @@ public class BoardController {
 	public ResponseEntity<BoardResponseEntity> getArticleRegistration(
 			@Parameter(description = "ID of the article to get registration for")
 			@PathVariable Long articleId) {
-		replyService.getAllReply(articleId);
+
 		BoardResponseEntity responseEntity = BoardResponseEntity.builder()
 				.status(HttpStatus.OK)
+				.replyFormDtoList(replyService.getAllReply(articleId))
 				.build();
 		return new ResponseEntity<>(responseEntity, responseEntity.getStatus());
 	}
@@ -185,7 +186,7 @@ public class BoardController {
 	}//must be preceded POST ARTICLE
 
 	@Operation(summary = "Get registration of an article")
-	@PutMapping("/article/{articleId}/reply/{replyId}")
+	@PutMapping("/article/{articleId}/reply")
 	public ResponseEntity<BoardResponseEntity> updateArticleRegistration(
 			@Parameter(description = "ID of the article to get registration for")
 			@PathVariable Long articleId,

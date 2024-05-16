@@ -1,16 +1,23 @@
 package com.mycarlong.controller;
 
+import java.security.Principal;
 import java.util.Date;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -26,12 +33,13 @@ import io.jsonwebtoken.SignatureAlgorithm;
 @RestController
 public class LoginController {
 
+    private static final Logger log = LoggerFactory.getLogger(LoginController.class);
     @Autowired
     UserRepository userRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
-
+    private Logger logger = LoggerFactory.getLogger(LoginController.class);
     @Value("${spring.jwt.secret}")
     private String jwtSecret;
 
@@ -62,6 +70,16 @@ public class LoginController {
             }
         }
     }
+
+    @GetMapping("/loggedinserinfo")
+    public ResponseEntity<?> getLoggenInUserName(@AuthenticationPrincipal Object principal) {
+        //        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        //        String loggedinUsername = authentication.getName();
+        Object loggedinUsername =  principal;
+        return new ResponseEntity<>(loggedinUsername,HttpStatus.OK);
+    }
+
 
     private String generateToken(String subject) {
       // 이전 토큰이 만료되도록 만료 시간을 짧게 설정합니다.

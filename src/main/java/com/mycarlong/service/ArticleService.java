@@ -13,8 +13,6 @@ public interface ArticleService {
 
 	ArticleDto viewArticleDetail(Long article_id);
 
-	List<ArticleDto> findFiftyArticldOrderByDesc();
-
 	void registArticle(ArticleFormDto articleDto, List<MultipartFile> multipartFileList) throws IOException;
 
 	void modifyArticle(Long articleId, ArticleFormDto articleDto);

@@ -11,17 +11,16 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-@Configuration
-@Configuration
+@Configuration()
 public class amazonS3Config {
 
-	@Value("${cloud.aws.s3.region}")
+	@Value("${cloud.aws.region.static}")
 	private String region;
 
-	@Value("${cloud.aws.credentials.accessKey}")
+	@Value("${cloud.aws.credentials.access-key}")
 	private String accessKey;
 
-	@Value("${cloud.aws.credentials.secretKey}")
+	@Value("${cloud.aws.credentials.secret-key}")
 	private String secretKey;
 
 	// 외부 의존성을 Bean으로 등록해서 DI를 통해 주입할 수 있도록 함

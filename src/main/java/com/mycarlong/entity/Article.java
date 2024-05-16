@@ -32,10 +32,8 @@ public class Article extends BaseTimeEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-
 	@Column(name = "title")
 	private String title;
-
 
 	@Column(name = "content" , length = 255 , columnDefinition = "TEXT")
 	private String content;
@@ -43,7 +41,7 @@ public class Article extends BaseTimeEntity {
 	@NotEmpty(message = "글쓴이를 입력해주세요.")
 	private String author;
 
-	@Column(name = "modelAndYear")
+	@Column(name = "category")
 	private String category;
 
 	private int hasReply;

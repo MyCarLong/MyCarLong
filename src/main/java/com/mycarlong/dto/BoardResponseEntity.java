@@ -17,7 +17,7 @@ public class BoardResponseEntity {
 	private List<ArticleDto> articleList;
 	private ArticleDto article;
 //	@Builder.Default
-//	private List<ReplyFormDto> replyFormDtoList = new ArrayList<>();
+	private List<ReplyFormDto> replyFormDtoList;
 	private Map<String, String> errorDetails;
 
 }
