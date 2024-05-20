@@ -2,6 +2,9 @@
 FROM gradle:8.7-jdk17 AS build
 WORKDIR /home/gradle/src
 RUN git clone -b release https://github.com/MyCarLong/MyCarLong.git .
+WORKDIR /home/gradle/src/MyCarLong
+RUN git pull origin release
+WORKDIR /home/gradle/src
 RUN gradle clean build --no-daemon
 
 # 패키지 스테이지
@@ -21,9 +24,27 @@ RUN apt-get update && apt-get install -y curl unzip xvfb libxi6 libgconf-2-4 \
 
 # 사용자 및 그룹 추가
 RUN groupadd --system --gid 1000 worker
-RUN useradd --system --uid 1000 --gid worker --disabled-password worker
+RUN useradd --system --uid 1000 --gid worker worker
 USER worker:worker
+
+# 환경 변수 설정
+ENV MySQL_URL ${MySQL_URL}
+ENV MySQL_PW ${MySQL_PW}
+ENV SpringJWT ${SpringJWT}
+ENV Naver_ClientID ${Naver_ClientID}
+ENV Naver_Secret ${Naver_Secret}
+ENV Google_ClientID ${Google_ClientID}
+ENV Google_Secret ${Google_Secret}
+ENV Kakao_ClientID ${Kakao_ClientID}
+ENV Kakao_Secret ${Kakao_Secret}
+ENV S3_AccessKey ${S3_AccessKey}
+ENV S3_SecretKey ${S3_SecretKey}
+ENV S3_BucketName ${S3_BucketName}
+ENV Kakao_redirectURL ${Kakao_redirectURL}
+ENV Google_redirectURL ${Google_redirectURL}
+ENV Naver_redirectURL ${Naver_redirectURL}
+ENV PROFILE deployTest
 
 EXPOSE 8097
 COPY --from=build /home/gradle/src/build/libs/*.jar /app.jar
-ENTRYPOINT ["java","-jar","/app.jar"]
+ENTRYPOINT ["java","-Dspring.profiles.active=${PROFILE}","-jar","/app.jar"]
