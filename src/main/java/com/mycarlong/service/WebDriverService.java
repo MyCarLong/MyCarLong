@@ -22,9 +22,11 @@ public class WebDriverService extends CustomException {
 	private WebDriver driver;
 
 	/**
-	 * WebDriver가 없다면 새로운 크롬드라이버를 생성합니다. 설정은 내부 메소드의 설정을 따릅니다. <br>( 백그라운드에서 실행 등등 사전설정이 되어있음.)
+	 * WebDriver가 없다면 새로운 크롬드라이버를 생성합니다. 설정은 내부 메소드의 설정을 따릅니다. <br>
+	 * ( 백그라운드에서 실행 등등 사전설정이 되어있음.)
 	 */
-	@Operation(summary = "Get WebDriver instance", description = "Get the WebDriver instance. If it's null, initialize a new one.")
+	@Operation(summary = "Get WebDriver instance", description = "Get the WebDriver instance. If it's null, initialize" +
+			" a new one.")
 	public WebDriver getDriver() {
 		if (driver == null) {
 			try {
@@ -47,19 +49,15 @@ public class WebDriverService extends CustomException {
 		}
 	}
 
-
 	@Operation(summary = "Set WebDriver options", description = "Set the options for WebDriver.")
 	private ChromeOptions setting() {
 		// 웹 드라이버 옵션 설정
 		ChromeOptions options = new ChromeOptions();
 		options.addArguments("--remote-allow-origins=*");
-		options.addArguments("headless");
-		options.addArguments("--no-sandbox");
 		options.addArguments("--window-size=1920,1080");
+		options.addArguments("--headless");
+		options.addArguments("--no-sandbox");
 		options.addArguments("--disable-dev-shm-usage");
-
-		// User-Agent 설정 추가
-		options.addArguments("--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537");
 		// 웹 드라이버 초기화
 		WebDriverManager.chromedriver().setup();
 		return options;
