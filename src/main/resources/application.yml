@@ -8,8 +8,9 @@ spring:
     import:
       - envRepo/application-aws.yml
       - envRepo/application-oauth.properties
-      - envRepo/BoardSetting.yml
+      - envRepo/application-board.yml
       - envRepo/S3_Setting.yml
+
   devtools:
     restart:
       enabled: true
@@ -20,7 +21,7 @@ spring:
   jpa:
     properties:
       hibernate:
-        show_sql: true
+#        show_sql: true
         format_sql: true
         jdbc:
           time_zone: Asia/Seoul
@@ -31,7 +32,7 @@ spring:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
   datasource: # RDS 연동시 수정해야함
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/myCarLong
+    url: jdbc:mysql://localhost:3306/mycarLong
     username: root
     password: 1234
   servlet:

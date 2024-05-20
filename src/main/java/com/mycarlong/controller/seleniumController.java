@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -44,9 +45,10 @@ public class seleniumController {
 			@ApiResponse(responseCode = "408", description = "Page load timeout"),
 			@ApiResponse(responseCode = "404", description = "Target not found"),
 			@ApiResponse(responseCode = "500", description = "Error during Merging DATA")})
+	@Cacheable(value = "carInfo", key = "#model.concat('-').concat(#year)")
 	@GetMapping("/car/info")
-	public CarInfoDto getInfo(@RequestParam("year")  @Parameter(description = "The year of the car model.") String year,
-	                          @RequestParam("model")  @Parameter(description = "The name of the car model.") String model) {
+	public CarInfoDto getInfo(@RequestParam("model")  @Parameter(description = "The name of the car model.") String model,
+	                          @RequestParam("year")  @Parameter(description = "The year of the car model.") String year) {
 		return seleniumService.mappingToJson(year , model);
 	}
 }

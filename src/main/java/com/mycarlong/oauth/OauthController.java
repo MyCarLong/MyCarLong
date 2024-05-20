@@ -1,5 +1,7 @@
 package com.mycarlong.oauth;
 
+import org.eclipse.jdt.internal.compiler.codegen.ObjectCache;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -10,6 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+
+import java.util.Map;
 
 @RequiredArgsConstructor
 @RequestMapping("/oauth")
@@ -30,11 +34,14 @@ public class OauthController {
     }
 
     @GetMapping("/login/{oauthServerType}")
-    ResponseEntity<Long> login(
+    ResponseEntity<?> login(
             @PathVariable OauthServerType oauthServerType,
             @RequestParam("code") String code
     ) {
-        Long login = oauthService.login(oauthServerType, code);
-        return ResponseEntity.ok(login);
+//        Long login = oauthService.login(oauthServerType, code);
+        Map<String, Object> loginInfo = oauthService.login(oauthServerType, code);
+        Long login = (Long) loginInfo.get("id");
+        String nickname = (String) loginInfo.get("nickname");
+        return ResponseEntity.status(HttpStatus.OK).body(Map.of("login",login,"nickname",nickname));
     }
 }
