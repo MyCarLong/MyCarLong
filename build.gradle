@@ -19,8 +19,8 @@ configurations {
 task copyPrivate(type: Copy) {
 	copy {
 		from './envRepo' //위 사진과 같은 폴더 명
-		include "boardSetting.yml" //위 폴더안에 있는 yml파일 명
-		include "S3_Setting.yml" //위 폴더안에 있는 yml파일 명
+		include "*.yml" //위 폴더안에 있는 yml파일 명
+		include "*.properties" //위 폴더안에 있는 yml파일 명
 		into 'src/main/resources' //복사할 위치
 	}
 }

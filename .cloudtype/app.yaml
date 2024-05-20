@@ -1,0 +1,35 @@
+name: mycarlong
+app: java@17
+options:
+  ports: "8097"
+  includes: resources/envRepo
+  strategy: recreate
+  env:
+    - name: MySQL_URL
+      secret: MySQL_URL
+    - name: MySQL_PW
+      secret: MySQL_PW
+    - name: SpringJWT
+      secret: SpringJWT
+    - name: Naver_ClientID
+      secret: Naver_ClientID
+    - name: Naver_Secret
+      secret: Naver_Secret
+    - name: Google_ClientID
+      secret: Google_ClientID
+    - name: Google_Secret
+      secret: Google_Secret
+    - name: Kakao_ClientID
+      secret: Kakao_ClientID
+    - name: Kakao_Secret
+      secret: Kakao_Secret
+    - name: S3_AccessKey
+      secret: S3_AccessKey
+    - name: S3_SecretKey
+      secret: S3_SecretKey
+    - name: S3_BucketName
+      secret: S3_BucketName
+context:
+  git:
+    url: git@github.com:MyCarLong/MyCarLong.git
+    branch: release
