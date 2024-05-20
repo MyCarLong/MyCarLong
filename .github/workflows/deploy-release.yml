@@ -9,11 +9,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Checkout submodules
-        uses: actions/checkout@v3
-        with:
-          submodules: recursive
-          token: ${{ secrets.ACTION_TOKEN }}
       - name: Connect deploy key
         uses: cloudtype-github-actions/connect@v1
         with:
@@ -29,10 +24,35 @@ jobs:
             name: mycarlong
             app: java@17
             options:
-              ports: ""
-              nodeversion: "16"
+              ports: "8097"
+              includes: resources/envRepo
+              strategy: recreate
+              env:
+                - name: MySQL_URL
+                  secret: MySQL_URL
+                - name: MySQL_PW
+                  secret: MySQL_PW
+                - name: SpringJWT
+                  secret: SpringJWT
+                - name: Naver_ClientID
+                  secret: Naver_ClientID
+                - name: Naver_Secret
+                  secret: Naver_Secret
+                - name: Google_ClientID
+                  secret: Google_ClientID
+                - name: Google_Secret
+                  secret: Google_Secret
+                - name: Kakao_ClientID
+                  secret: Kakao_ClientID
+                - name: Kakao_Secret
+                  secret: Kakao_Secret
+                - name: S3_AccessKey
+                  secret: S3_AccessKey
+                - name: S3_SecretKey
+                  secret: S3_SecretKey
+                - name: S3_BucketName
+                  secret: S3_BucketName
             context:
               git:
                 url: git@github.com:${{ github.repository }}.git
-                ref: ${{ github.ref }}  
-    
+                ref: ${{ github.ref }}
