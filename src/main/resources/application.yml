@@ -32,9 +32,9 @@ spring:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
   datasource: # RDS 연동시 수정해야함
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/mycarLong
+    url: ${MySQL_URL}
     username: root
-    password: 1234
+    password: ${MySQL_PW}
   servlet:
     multipart:
       maxFileSize: 5MB
