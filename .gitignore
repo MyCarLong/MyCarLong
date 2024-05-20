@@ -6,8 +6,14 @@
 HELP.md
 ReadMe.md
 
-application-API-KEY.properties
-application.properties
+envRepo/
+application-aws.yml
+application-board.yml
+application-oauth.properties
+BoardSetting.yml
+focal-time-421105-cf8b5143fae8.json
+S3_Setting.yml
+
 # IDE 설정 폴더 (STS)
 .apt_generated
 .classpath
@@ -64,7 +70,6 @@ logs/
 ~/.intellijidea/
 .idea/workspace.xml
 .idea/caches/
-.metadata/.plugins/org.eclipse.core.resources.workspace
 
 # 빌드 파일
 target/*.jar
@@ -80,3 +85,6 @@ bin/
 lib/
 docs/
 venv/
+
+# properties
+oauthkey.properties

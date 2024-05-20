@@ -4,10 +4,50 @@
 <head>
     <meta charset="UTF-8">
     <title>Thymeleaf Example</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
 
 <body>
 <h1 th:text="'Hello, Thymeleaf!'"></h1>
+
+<h1>File Upload</h1>
+<form method="POST" action="/board/imgUpload" th:action="@{/board/imgUpload}" enctype="multipart/form-data">
+    <label for="title">title</label>
+    <input type="text" name="title" id="title"/><br>
+
+    <label for="content">content</label>
+    <textarea name="content" id="content"></textarea><br>
+
+    <label for="author">author</label>
+    <input type="text" name="author" id="author"/><br>
+
+    <label for="category">category</label>
+    <input type="text" name="category" id="category"/><br>
+
+    <label for="imgFile">이미지 파일</label>
+    <input type="file" name="imgFile" id="imgFile"/><br>
+    <button type="submit">Upload</button>
+</form>
+
+<br>
+<br>
+<img id="image" alt="Image">
+
+<script th:inline="javascript">
+    $(document).ready(function() {
+        $.ajax({
+            url: '/images/your_image_filename',
+            type: 'get',
+            dataType: 'json',
+            success: function(data) {
+                $('#image').attr('src', data.imageUrl);
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.error(textStatus, errorThrown);
+            }
+        });
+    });
+</script>
 </body>
 
 </html>
