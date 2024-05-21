@@ -59,7 +59,7 @@ public class WebDriverService extends CustomException {
 		options.addArguments("--no-sandbox");
 		options.addArguments("--disable-dev-shm-usage");
 		// 웹 드라이버 초기화
-		WebDriverManager.chromedriver().setup();
+		WebDriverManager.chromedriver().clearDriverCache().setup();
 		return options;
 	}
 }
