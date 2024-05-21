@@ -26,15 +26,20 @@ public class GoogleMemberClient implements OauthMemberClient {
         return OauthServerType.GOOGLE;
     }
 
+    // 제공된 인증 코드를 사용하여 OAuth 멤버 정보를 가져옴
     @Override
     public OauthMember fetch(String authCode) {
+        // 1단계: 인증 코드를 사용하여 토큰을 가져옴
         GoogleToken tokenInfo = googleApiClient.fetchToken(tokenRequestParams(authCode)); // (1)
+        // 2단계: 액세스 토큰을 사용하여 사용자 정보를 가져옴
         GoogleMemberResponse googleMemberResponse =
                 googleApiClient.fetchMember("Bearer " + tokenInfo.access_token());  // (2)
-                logger.info("access_token {}", tokenInfo.access_token());
+        logger.info("access_token {}", tokenInfo.access_token());
+        // 3단계: GoogleMemberResponse를 도메인 객체로 변환하여 반환
         return googleMemberResponse.toDomain();  // (3)
     }
 
+    // 토큰 요청 파라미터를 생성
     private MultiValueMap<String, String> tokenRequestParams(String authCode) {
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("grant_type", "authorization_code");

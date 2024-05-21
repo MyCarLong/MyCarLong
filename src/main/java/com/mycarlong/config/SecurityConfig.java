@@ -76,7 +76,7 @@ public class SecurityConfig{
 
         // 경로별 인가 작업
         http.authorizeHttpRequests((authorizeRequests) -> authorizeRequests
-                .requestMatchers("/","/aboutus","/api/login","api/signup","oauth/**").permitAll() // 루트 경로는 모두 허용
+                .requestMatchers("/",",/aboutus","/api/**","oauth/**").permitAll()
                 .anyRequest().hasRole("USER") // 나머지 요청은 인증된 사용자만 허용
         );
 

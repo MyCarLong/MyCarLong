@@ -10,7 +10,6 @@ envRepo/
 application-aws.yml
 application-board.yml
 application-oauth.properties
-BoardSetting.yml
 focal-time-421105-cf8b5143fae8.json
 S3_Setting.yml
 
@@ -88,3 +87,5 @@ venv/
 
 # properties
 oauthkey.properties
+
+src/main/resources/envRepo
