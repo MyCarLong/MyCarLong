@@ -25,6 +25,11 @@ RUN apt-get update && apt-get install -y curl unzip xvfb libxi6 libgconf-2-4 \
 # 사용자 및 그룹 추가
 RUN groupadd --system --gid 1000 worker
 RUN useradd --system --uid 1000 --gid worker worker
+
+# WebDriverManager 캐시 디렉토리 생성 및 권한 설정
+RUN mkdir -p /home/worker/.cache/selenium
+RUN chown -R worker:worker /home/worker/.cache/selenium
+
 USER worker:worker
 
 # 환경 변수 설정
@@ -43,7 +48,6 @@ ENV S3_BucketName ${S3_BucketName}
 ENV Kakao_redirectURL ${Kakao_redirectURL}
 ENV Google_redirectURL ${Google_redirectURL}
 ENV Naver_redirectURL ${Naver_redirectURL}
-ENV PROFILE deployTest
 
 EXPOSE 8097
 COPY --from=build /home/gradle/src/build/libs/*.jar /app.jar
