@@ -88,3 +88,5 @@ venv/
 
 # properties
 oauthkey.properties
+
+src/main/resources/envRepo/

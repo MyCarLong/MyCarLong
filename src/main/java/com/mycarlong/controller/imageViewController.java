@@ -9,6 +9,7 @@ import com.mycarlong.service.ArticleImageServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -29,24 +30,67 @@ public class imageViewController {
 
 	private final ArticleImageServiceImpl articleImageService;
 	private Logger logger = LoggerFactory.getLogger(imageViewController.class);
+
+	@Value("${CloudFrontURL}")
+	private String cloudFrontURL;
+
+
 	@GetMapping("/image/{fileName}")
-	public ResponseEntity<Resource> viewImage(@PathVariable String fileName) {
+	public ResponseEntity<String> viewImageCloudFront(@PathVariable String fileName) {
 		logger.info("fileName : {}", fileName);
 
+//		ArticleImageDto foundImage = articleImageService.findImageByName(fileName);
 		ArticleImageDto foundImage = articleImageService.findImageByName(fileName);
-		Resource resource = new FileSystemResource(foundImage.getImageSavedPath());
-		if (!resource.exists())
+		if (foundImage.getImageSavedPath() == null)
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
+		logger.info("foundImage.getImageSavedName() : {}", foundImage.getImageSavedName());
 		HttpHeaders header = new HttpHeaders();
-		Path filePath = null;
-		try{
-			filePath =  Paths.get(fileName);
-			header.add("Content-Type" , Files.probeContentType(filePath));
-		} catch (IOException e) {
-			throw new DataMismatchException("filePath를 구할 수 없습니다.", null);
+		String imgUrl = null;
+		try {
+			imgUrl = cloudFrontURL + foundImage.getImageSavedName();
+			if (imgUrl.isEmpty()) {
+				imgUrl = "LOAD IMAGE SAVED PATH WAS FAILED";
+			}
+			return new ResponseEntity<>(imgUrl, HttpStatus.OK);
+		} catch (Exception e) {
+			imgUrl = e.getMessage();
 		}
+		return new ResponseEntity<>(imgUrl, HttpStatus.OK);
 
-		return new ResponseEntity<Resource>(resource, header , HttpStatus.OK);
+		//		Resource resource = new FileSystemResource(foundImage.getImageSavedPath());
+		//		if (!resource.exists())
+		//			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		//
+		//		HttpHeaders header = new HttpHeaders();
+		//		Path filePath = null;
+		//		try {
+		//			filePath = Paths.get(fileName);
+		//			header.add("Content-Type", Files.probeContentType(filePath));
+		//		} catch (IOException e) {
+		//			throw new DataMismatchException("filePath를 구할 수 없습니다.", null);
+		//		}
+		//
+		//		return new ResponseEntity<Resource>(resource, header, HttpStatus.OK);
 	}
+	//	}@GetMapping("/image/{fileName}")
+	//	public ResponseEntity<Resource> viewImage(@PathVariable String fileName) {
+	//		logger.info("fileName : {}", fileName);
+	//
+	//		ArticleImageDto foundImage = articleImageService.findImageByName(fileName);
+	//		Resource resource = new FileSystemResource(foundImage.getImageSavedPath());
+	//		if (!resource.exists())
+	//			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+	//
+	//		HttpHeaders header = new HttpHeaders();
+	//		Path filePath = null;
+	//		try{
+	//			filePath =  Paths.get(fileName);
+	//			header.add("Content-Type" , Files.probeContentType(filePath));
+	//		} catch (IOException e) {
+	//			throw new DataMismatchException("filePath를 구할 수 없습니다.", null);
+	//		}
+	//
+	//		return new ResponseEntity<Resource>(resource, header , HttpStatus.OK);
+	//	}
 }
