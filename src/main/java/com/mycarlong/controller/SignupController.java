@@ -36,7 +36,6 @@ public class SignupController {
     try {
         // 회원가입 로직 호출
         String token = userService.registerUser(signupRequest.getName(), signupRequest.getEmail(), signupRequest.getPassword(), signupRequest.getContact());
-        System.out.println("jwt token = " + token);
         System.out.println("사용자 = " + signupRequest.getName());
         // 회원가입이 성공하면 적절한 응답을 클라이언트에게 전송
         return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponse(true, "회원가입이 완료되었습니다.",signupRequest.getName() ,token));
