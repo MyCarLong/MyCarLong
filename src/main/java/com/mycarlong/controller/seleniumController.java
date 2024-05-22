@@ -45,7 +45,7 @@ public class seleniumController {
 			@ApiResponse(responseCode = "408", description = "Page load timeout"),
 			@ApiResponse(responseCode = "404", description = "Target not found"),
 			@ApiResponse(responseCode = "500", description = "Error during Merging DATA")})
-	@Cacheable(value = "carInfo", key = "#model.concat('-').concat(#year)")
+	@Cacheable(value = "carInfo", key = "#model.concat('-').concat(#year)" ,unless = "#result.status !=200")
 	@GetMapping("/car/info")
 	public CarInfoDto getInfo(@RequestParam("model")  @Parameter(description = "The name of the car model.") String model,
 	                          @RequestParam("year")  @Parameter(description = "The year of the car model.") String year) {
