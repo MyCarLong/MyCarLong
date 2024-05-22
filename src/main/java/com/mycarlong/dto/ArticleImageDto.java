@@ -2,13 +2,10 @@ package com.mycarlong.dto;
 
 
 import com.mycarlong.entity.ArticleImage;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 import org.modelmapper.ModelMapper;
 
-@Getter
+@Getter @Setter
 @Builder
 @AllArgsConstructor
 @RequiredArgsConstructor
@@ -20,6 +17,8 @@ public class ArticleImageDto {
 	private String imageSavedName;
 
 	private String imageSavedPath;
+
+	private String contentType;
 
 	private static ModelMapper modelMapper = new ModelMapper();
 
@@ -33,6 +32,7 @@ public class ArticleImageDto {
 				.imageOriginName(articleImg.getImageOriginName())
 				.imageSavedName(articleImg.getImageSavedName())
 				.imageSavedPath(articleImg.getImageSavedPath())
+				.contentType(articleImg.getFileExtension())
 				.articleId(articleImg.getArticle().getId())
 				.build();
 

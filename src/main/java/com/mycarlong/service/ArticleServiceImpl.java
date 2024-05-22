@@ -79,10 +79,9 @@ public class ArticleServiceImpl implements ArticleService {
 				articleImage.setArticle(article);
 				articleImage.setImageSetNum(i);
 				logger.info(" Article Image = {}", articleImage);
+//				articleImageService.saveArticleImg(article, String.valueOf(i), imgFileList.get(i));
+				articleImageService.saveArticleImgS3(article, String.valueOf(i), imgFileList.get(i));
 
-
-				articleImageService.saveArticleImg(article, String.valueOf(i), imgFileList.get(i));
-				//				article.getThisImgList().add(articleImage);
 			}
 			//			article.setThisImgList(articleImageList);
 			articleRepository.save(article);

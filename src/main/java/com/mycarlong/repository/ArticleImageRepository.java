@@ -1,5 +1,6 @@
 package com.mycarlong.repository;
 
+import com.mycarlong.entity.Article;
 import com.mycarlong.entity.ArticleImage;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -14,5 +15,4 @@ public interface ArticleImageRepository extends JpaRepository<ArticleImage, Long
 	List<ArticleImage> findByArticleIdOrderByImageSetNum(Long articleId);
 	List<ArticleImage> findByArticleId(Long articleId);
 	ArticleImage findByImageSavedName(String imageSavedName);
-
 }

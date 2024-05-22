@@ -73,6 +73,46 @@ public class ArticleImageServiceImpl implements ArticleImageService {
 		return "error";
 	}
 
+	@Override
+	public String saveArticleImgS3(Article article, String fileIndex, MultipartFile articleImgFile) {
+
+		try {
+			String imageOriginName = articleImgFile.getOriginalFilename();
+			String imageSavedName = "";
+			String imageSavedPath = "";
+
+			//파일 업로드
+			if(imageOriginName != null){
+				FileSaveResponse imgSaveResult = fileService.uploadToS3(article.getTitle(),
+				                                                        article.getAuthor(),
+				                                                        fileIndex,
+				                                                        imageOriginName,
+				                                                        articleImgFile);
+				if (!imgSaveResult.isEmpty()) {
+					imageSavedName = imgSaveResult.getFileSavedName();
+					imageSavedPath = imgSaveResult.getFileUploadFullUrl();
+					String fileExtension = imgSaveResult.getFileExtension();
+
+					ArticleImage articleImg = ArticleImage.builder()
+							.imageOriginName(imageOriginName)
+							.imageSavedName(imageSavedName)
+							.imageSavedPath(imageSavedPath)
+							.imageSetNum(Integer.parseInt(fileIndex))
+							.article(article)
+							.fileExtension(fileExtension)
+							.build();
+					logger.info("이미지 레포지토리 세이브전 확인 : {}", articleImg);
+					articleImageRepository.save(articleImg);
+					return imageSavedPath;
+				}
+			}
+
+		} catch (Exception e) {
+			log.warn(e.getMessage());
+		}
+		return "error";
+	}
+
 
 		@Override
 		public String updateItemImg(Article article, String fileIndex, MultipartFile articleImgFile) throws Exception {
@@ -112,13 +152,14 @@ public class ArticleImageServiceImpl implements ArticleImageService {
 		/**
 		 * return File saved Name
 		 * */
+		@Override
 		public ArticleImageDto findImageByName(String imageSavedName) {
 			ArticleImage image = articleImageRepository.findByImageSavedName(imageSavedName);
 			return ArticleImageDto.of(image);
 		}
 
 
-//		public ResponseEntity<FileSaveResponse> saveTest (ArticleFormDto articleFormDto)  throws IOException
+	//		public ResponseEntity<FileSaveResponse> saveTest (ArticleFormDto articleFormDto)  throws IOException
 //		{ //ArticleImage articleImg, MultipartFile articleImgFileList) throws IOException {
 //
 //			try {
