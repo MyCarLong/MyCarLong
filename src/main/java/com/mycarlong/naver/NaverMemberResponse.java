@@ -13,7 +13,7 @@ public record NaverMemberResponse(
         String message,
         Response response
 ) {
-
+    // 받아온 데이터로 회원정보 생성
   public OauthMember toDomain() {
     return OauthMember.builder()
             .oauthId(new OauthId(String.valueOf(response.id), NAVER))

@@ -28,6 +28,7 @@ public class HttpInterfaceConfig {
         return createHttpInterface(GoogleApiClient.class);
     }
 
+    // 주어진 인터페이스 타입에 대한 HTTP 인터페이스를 생성
     private <T> T createHttpInterface(Class<T> clazz) {
         WebClient webClient = WebClient.create();
         HttpServiceProxyFactory build = HttpServiceProxyFactory.builderFor(WebClientAdapter.create(webClient)).build();
