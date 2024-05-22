@@ -38,7 +38,7 @@ public class SeleniumServiceImpl extends CustomException implements SeleniumServ
 	private Logger logger = LoggerFactory.getLogger(SeleniumServiceImpl.class);
 	private static final String DEFAULT_SEARCH_URL = "https://search.naver.com/search" +
 			".naver?where=nexearch&sm=top_hty&fbm=0&ie=utf8&query=";  // 네이버 검색 기본 URL을 잡는다.
-	private static final Duration WAIT_DURATION = Duration.ofMillis(1000);
+	private static final Duration WAIT_DURATION = Duration.ofMillis(5000);
 
 	private final WebDriverService webDriverService;
 
