@@ -80,6 +80,11 @@ public class LoginController {
         return new ResponseEntity<>(loggedinUsername,HttpStatus.OK);
     }
 
+    @GetMapping("/isServerOn")
+    public ResponseEntity<String> getLoggenInUserName() {
+        return ResponseEntity.ok().body("ok");
+    }
+
 
     private String generateToken(String subject) {
       // 이전 토큰이 만료되도록 만료 시간을 짧게 설정합니다.
