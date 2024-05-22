@@ -58,6 +58,7 @@ public class WebDriverService extends CustomException {
 		options.addArguments("--headless");
 		options.addArguments("--no-sandbox");
 		options.addArguments("--disable-dev-shm-usage");
+		options.addArguments("--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537");
 		// 웹 드라이버 초기화
 		WebDriverManager.chromedriver().clearDriverCache().setup();
 		return options;
