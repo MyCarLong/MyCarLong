@@ -45,9 +45,13 @@ ENV Kakao_Secret ${Kakao_Secret}
 ENV S3_AccessKey ${S3_AccessKey}
 ENV S3_SecretKey ${S3_SecretKey}
 ENV S3_BucketName ${S3_BucketName}
+ENV S3_Region ${S3_Region}
+ENV CloudFrontURL ${CloudFrontURL}
 ENV Kakao_redirectURL ${Kakao_redirectURL}
 ENV Google_redirectURL ${Google_redirectURL}
 ENV Naver_redirectURL ${Naver_redirectURL}
+ENV FrontServer ${FrontServer}
+ENV FrontServerIp ${FrontServerIp}
 
 EXPOSE 8097
 COPY --from=build /home/gradle/src/build/libs/*.jar /app.jar
