@@ -7,6 +7,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.bouncycastle.openssl.PasswordException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,7 +35,7 @@ import java.util.List;
 public class SignupController {
     @Autowired
     private UserService userService;
-
+    private final Logger logger= LoggerFactory.getLogger(SignupController.class);
 
     @Operation(summary = "회원 가입", description = "회원 가입 요청을 처리합니다.")
     @ApiResponses(value = {
@@ -78,6 +80,7 @@ public class SignupController {
     })
     @PutMapping("/api/modify")
     public ResponseEntity<?> modifyUser(@RequestBody SignupRequest signupRequest) {
+        logger.info("signupRequest : {}", signupRequest.toString());
         String password = signupRequest.getPassword();
         String name = signupRequest.getName();
         String email = signupRequest.getEmail();
