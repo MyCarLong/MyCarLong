@@ -24,7 +24,7 @@ public class ArticleImageDto {
 
 	private Long articleId;
 
-//	private MultipartFile imgFile;
+	//	private MultipartFile imgFile;
 
 	public static ArticleImageDto of(ArticleImage articleImg) {
 		ArticleImageDto dto = ArticleImageDto.builder()

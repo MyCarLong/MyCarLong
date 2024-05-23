@@ -9,6 +9,7 @@ import com.amazonaws.services.s3.model.PutObjectResult;
 import com.mycarlong.dto.FileSaveResponse;
 import com.mycarlong.exception.CustomBoardException;
 import com.mycarlong.utils.FileChecker;
+import com.rometools.rome.feed.rss.Cloud;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -45,55 +46,22 @@ public class FileServiceImpl implements FileService{
 	@Value("${cloud.aws.s3.bucket}")
 	private String bucketName;
 
+	@Value("${CloudFrontURL}")
+	private String cdnUrl;
+
 	@Value("${uploadPath}")
 	private String uploadPath;
 
-	@Operation(summary = "Upload a file")
-	@ApiResponses({
-			@ApiResponse(responseCode = "200", description = "File uploaded successfully"),
-			@ApiResponse(responseCode = "400", description = "Bad request")
-	})
-	@Override
-	public ResponseEntity<?> uploadFile(String title, String author, String fileIndex, String originalFileName, byte[] fileData) {
-		if (checker.isAllowedExtension(fileData)) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("fail to Upload file because fileData is Null");
-		}
-		//TODO: 파일저장시 제목 게시글제목_저자_UUID_FileSetNum.jpg 같은 방식으로 고치기
-
-		UUID uuid = UUID.randomUUID();
-		String extension = originalFileName.substring(originalFileName.lastIndexOf("."));
-		String savedFileName = String.format("%s_%s_%s_%s%s", title, author, fileIndex, uuid, extension);
-//		String savedFileName = title + "_" + author + "_" +fileIndex+"_"+ uuid + extension;
-		String fileUploadFullUrl = uploadPath + savedFileName;  // 'file:' 접두사 제거
-
-
-		try (FileOutputStream fos = new FileOutputStream(fileUploadFullUrl)) {
-			fos.write(fileData);
-			log.info("파일을 저장하였습니다: {}", fileUploadFullUrl);
-			FileSaveResponse fResponse=  FileSaveResponse.builder()
-					.fileName(originalFileName)
-					.fileSavedName(savedFileName)
-					.fileUploadFullUrl(fileUploadFullUrl)
-					.savedUserName(author)
-					.associatedArticleTitle(title)
-					.fileExtension(extension)
-					.build();
-
-
-			return ResponseEntity.status(HttpStatus.OK).body(fResponse);
-		} catch (Exception e) {
-			log.error("파일 저장 중 오류 발생: {}", e.getMessage());
-			e.printStackTrace();
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage()); //"fail to Upload file due to an error";
-		} finally {
-			uuid = null;
-		}
-	}
-
+//	@Operation(summary = "Upload a file")
+//	@ApiResponses({
+//			@ApiResponse(responseCode = "200", description = "File uploaded successfully"),
+//			@ApiResponse(responseCode = "400", description = "Bad request")
+//	})
 //
-//	public String updateFile(String title, String author, String fileIndex, String originalFileName, byte[] fileData) {
+//	@Override
+//	public ResponseEntity<?> uploadFile(String title, String author, String fileIndex, String originalFileName, byte[] fileData) {
 //		if (checker.isAllowedExtension(fileData)) {
-//			return "fail to Upload file because fileData is Null";
+//			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("fail to Upload file because fileData is Null");
 //		}
 //		//TODO: 파일저장시 제목 게시글제목_저자_UUID_FileSetNum.jpg 같은 방식으로 고치기
 //
@@ -103,7 +71,6 @@ public class FileServiceImpl implements FileService{
 //		//		String savedFileName = title + "_" + author + "_" +fileIndex+"_"+ uuid + extension;
 //		String fileUploadFullUrl = uploadPath + savedFileName;  // 'file:' 접두사 제거
 //
-//		log.info("생성된 파일 업로드 경로입니다: {}", fileUploadFullUrl);
 //
 //		try (FileOutputStream fos = new FileOutputStream(fileUploadFullUrl)) {
 //			fos.write(fileData);
@@ -116,11 +83,15 @@ public class FileServiceImpl implements FileService{
 //					.associatedArticleTitle(title)
 //					.fileExtension(extension)
 //					.build();
-//			return "success";
+//
+//
+//			return ResponseEntity.status(HttpStatus.OK).body(fResponse);
 //		} catch (Exception e) {
 //			log.error("파일 저장 중 오류 발생: {}", e.getMessage());
 //			e.printStackTrace();
-//			return "fail"; //"fail to Upload file due to an error";
+//			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage()); //"fail to Upload file due to an error";
+//		} finally {
+//			uuid = null;
 //		}
 //	}
 
@@ -167,18 +138,18 @@ public class FileServiceImpl implements FileService{
 				.build();
 		try{
 
-//			PutObjectResult putObjectResult = amazonS3.putObject(new PutObjectRequest(
-//					bucketName, savedFileName, multipartFile.getInputStream(),metadata).withCannedAcl(CannedAccessControlList.PublicRead));
+			//			PutObjectResult putObjectResult = amazonS3.putObject(new PutObjectRequest(
+			//					bucketName, savedFileName, multipartFile.getInputStream(),metadata).withCannedAcl(CannedAccessControlList.PublicRead));
 			PutObjectResult putObjectResult = amazonS3.putObject(bucketName, savedFileName, multipartFile.getInputStream(),metadata);
 
 			String savedURL = amazonS3.getUrl(bucketName, originalFilename).toString(); // bucket에 저장된 이름으로 URL 반환
-			saveResponse.setFileUploadFullUrl("");
+			saveResponse.setFileUploadFullUrl(cdnUrl+savedFileName);
 			saveResponse.setPutObjectResult(putObjectResult);
-	//			amazonS3.putObject(bucketName, originalFilename, multipartFile.getInputStream(), metadata); //실제 파일 업로드
+			//			amazonS3.putObject(bucketName, originalFilename, multipartFile.getInputStream(), metadata); //실제 파일 업로드
 		} catch(IOException e){
 			saveResponse.setResponse(new CustomBoardException.Response("500", "fileuploadError"));
 		}
-	//		이미지 저장경로 =  amazonS3.getUrl(bucketName, imageSavedName).toString()
+		//		이미지 저장경로 =  amazonS3.getUrl(bucketName, imageSavedName).toString()
 		return saveResponse;
 
 	}

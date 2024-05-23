@@ -64,9 +64,9 @@ public class ArticleServiceImpl implements ArticleService {
 
 
 	//	@Override
-//	public List<ArticleDto> findFiftyArticldOrderByDesc() {
-//		return pagingArticle(20, "null");  //내부에서 이미 예외처리 하므로 별도 예외처리 X
-//	}
+	//	public List<ArticleDto> findFiftyArticldOrderByDesc() {
+	//		return pagingArticle(20, "null");  //내부에서 이미 예외처리 하므로 별도 예외처리 X
+	//	}
 
 	@Override
 	@Transactional
@@ -79,7 +79,7 @@ public class ArticleServiceImpl implements ArticleService {
 				articleImage.setArticle(article);
 				articleImage.setImageSetNum(i);
 				logger.info(" Article Image = {}", articleImage);
-//				articleImageService.saveArticleImg(article, String.valueOf(i), imgFileList.get(i));
+				//				articleImageService.saveArticleImg(article, String.valueOf(i), imgFileList.get(i));
 				articleImageService.saveArticleImgS3(article, String.valueOf(i), imgFileList.get(i));
 
 			}
@@ -141,35 +141,35 @@ public class ArticleServiceImpl implements ArticleService {
 	}
 
 
-//	@Override
-//	public List<ArticleDto> findByCategory(String category) {
-//
-//		List<Article> articleList = articleRepository.findByCategory(category);
-////		articleList.sort(Comparator.comparing(Article::getRegTime));
-//
-//		List<ArticleDto> articleDtoList = new ArrayList<>();
-//		for (Article article : articleList) {
-//			List<ArticleImage> foundArticleImages = article.getArticleImageList();//articleImageRepository.findByArticleId(article.getId());
-//			logger.info("foundArticleImages 확인하기:{}", article.getArticleImageList());
-//			List<ArticleImageDto> foundArticleImagesDto = new ArrayList<>();
-//			for (ArticleImage articleImage: foundArticleImages) {
-//				//logger.info("articleImage 이름 , 연관 아티클아이디 확인하기:{}", articleImage.getImageSavedName(), articleImage.getArticle().getId());
-//				ArticleImageDto articleImageDto = ArticleImageDto.builder()
-//						.imageId(articleImage.getId())
-//						.imageOriginName(articleImage.getImageOriginName())
-//						.imageSavedName(articleImage.getImageSavedName())
-//						.imageSavedPath(articleImage.getImageSavedPath())
-//						.articleId(articleImage.getArticle().getId())
-//						.build();
-//				foundArticleImagesDto.add(articleImageDto);
-//			}
-//
-//			ArticleDto newArticleDto = ArticleDto.of(article);
-//			newArticleDto.setArticleImageList(foundArticleImagesDto);
-//			articleDtoList.add(newArticleDto);
-//		}
-//		return articleDtoList;
-//	}
+	//	@Override
+	//	public List<ArticleDto> findByCategory(String category) {
+	//
+	//		List<Article> articleList = articleRepository.findByCategory(category);
+	////		articleList.sort(Comparator.comparing(Article::getRegTime));
+	//
+	//		List<ArticleDto> articleDtoList = new ArrayList<>();
+	//		for (Article article : articleList) {
+	//			List<ArticleImage> foundArticleImages = article.getArticleImageList();//articleImageRepository.findByArticleId(article.getId());
+	//			logger.info("foundArticleImages 확인하기:{}", article.getArticleImageList());
+	//			List<ArticleImageDto> foundArticleImagesDto = new ArrayList<>();
+	//			for (ArticleImage articleImage: foundArticleImages) {
+	//				//logger.info("articleImage 이름 , 연관 아티클아이디 확인하기:{}", articleImage.getImageSavedName(), articleImage.getArticle().getId());
+	//				ArticleImageDto articleImageDto = ArticleImageDto.builder()
+	//						.imageId(articleImage.getId())
+	//						.imageOriginName(articleImage.getImageOriginName())
+	//						.imageSavedName(articleImage.getImageSavedName())
+	//						.imageSavedPath(articleImage.getImageSavedPath())
+	//						.articleId(articleImage.getArticle().getId())
+	//						.build();
+	//				foundArticleImagesDto.add(articleImageDto);
+	//			}
+	//
+	//			ArticleDto newArticleDto = ArticleDto.of(article);
+	//			newArticleDto.setArticleImageList(foundArticleImagesDto);
+	//			articleDtoList.add(newArticleDto);
+	//		}
+	//		return articleDtoList;
+	//	}
 
 	@Override
 	public List<ArticleDto> findByCategory(String category) {
@@ -219,5 +219,3 @@ public class ArticleServiceImpl implements ArticleService {
 //			return  imageDtoInjection(articles,articleDtoList); // articles.stream().map(ArticleDto::of).collect(Collectors.toList());
 //		}
 //	}
-
-

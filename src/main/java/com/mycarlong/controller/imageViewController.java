@@ -39,7 +39,7 @@ public class imageViewController {
 	public ResponseEntity<String> viewImageCloudFront(@PathVariable String fileName) {
 		logger.info("fileName : {}", fileName);
 
-//		ArticleImageDto foundImage = articleImageService.findImageByName(fileName);
+		//		ArticleImageDto foundImage = articleImageService.findImageByName(fileName);
 		ArticleImageDto foundImage = articleImageService.findImageByName(fileName);
 		if (foundImage.getImageSavedPath() == null)
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -58,39 +58,6 @@ public class imageViewController {
 		}
 		return new ResponseEntity<>(imgUrl, HttpStatus.OK);
 
-		//		Resource resource = new FileSystemResource(foundImage.getImageSavedPath());
-		//		if (!resource.exists())
-		//			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-		//
-		//		HttpHeaders header = new HttpHeaders();
-		//		Path filePath = null;
-		//		try {
-		//			filePath = Paths.get(fileName);
-		//			header.add("Content-Type", Files.probeContentType(filePath));
-		//		} catch (IOException e) {
-		//			throw new DataMismatchException("filePath를 구할 수 없습니다.", null);
-		//		}
-		//
-		//		return new ResponseEntity<Resource>(resource, header, HttpStatus.OK);
 	}
-	//	}@GetMapping("/image/{fileName}")
-	//	public ResponseEntity<Resource> viewImage(@PathVariable String fileName) {
-	//		logger.info("fileName : {}", fileName);
-	//
-	//		ArticleImageDto foundImage = articleImageService.findImageByName(fileName);
-	//		Resource resource = new FileSystemResource(foundImage.getImageSavedPath());
-	//		if (!resource.exists())
-	//			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-	//
-	//		HttpHeaders header = new HttpHeaders();
-	//		Path filePath = null;
-	//		try{
-	//			filePath =  Paths.get(fileName);
-	//			header.add("Content-Type" , Files.probeContentType(filePath));
-	//		} catch (IOException e) {
-	//			throw new DataMismatchException("filePath를 구할 수 없습니다.", null);
-	//		}
-	//
-	//		return new ResponseEntity<Resource>(resource, header , HttpStatus.OK);
-	//	}
+
 }

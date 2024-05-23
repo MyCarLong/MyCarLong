@@ -9,7 +9,7 @@ import java.io.IOException;
 
 public interface FileService {
 
-	ResponseEntity<?> uploadFile(String title, String author, String fileIndex, String originalFileName, byte[] fileData);
+//	ResponseEntity<?> uploadFile(String title, String author, String fileIndex, String originalFileName, byte[] fileData);
 	void deleteFile(String filePath) throws IOException;
 
 	FileSaveResponse uploadToS3(String title, String author, String fileIndex, String originalFileName, MultipartFile multipartFile) throws IOException;
