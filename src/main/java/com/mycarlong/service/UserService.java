@@ -14,6 +14,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import jakarta.persistence.EntityManager;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserService{
@@ -40,23 +41,18 @@ public class UserService{
     private JWTUtil jwtUtil; // JWTUtil 클래스의 Autowired를 통해 주입
 
     public String findByPassword(String password, String name) {
-        QUserEntity user = QUserEntity.userEntity;
+        // 이름으로 사용자 조회
+        UserEntity foundUser = userRepository.findByName(name);
 
-        // 모든 사용자를 가져옴
-        List<UserEntity> users = queryFactory.selectFrom(user).fetch();
-
-        // 가져온 데이터를 바탕으로 이름과 비밀번호가 일치하는지 비교
-        for (UserEntity foundUser : users) {
-            if (foundUser.getName().equals(name) && passwordEncoder.matches(password, foundUser.getPassword())) {
-	            logger.info("DSL로 찾은 유저 비밀번호: {}", foundUser.getPassword());
-	            logger.info("DSL로 찾은 유저명: {}", foundUser.getName());
-	            logger.info("입력한 비밀번호: {}", password);
-	            logger.info("비밀번호 일치: {}", passwordEncoder.matches(password, foundUser.getPassword()));
-                return password;
-            }
+        if (foundUser != null && passwordEncoder.matches(password, foundUser.getPassword())) {
+            logger.info("JPA로 찾은 유저 비밀번호: {}", foundUser.getPassword());
+            logger.info("JPA로 찾은 유저명: {}", foundUser.getName());
+            logger.info("입력한 비밀번호: {}", password);
+            logger.info("비밀번호 일치: {}", passwordEncoder.matches(password, foundUser.getPassword()));
+            return password;
+        } else {
+            throw new UsernameNotFoundException("존재하지 않는 사용자명 또는 비밀번호입니다.");
         }
-
-        throw new UsernameNotFoundException("존재하지 않는 사용자명 또는 비밀번호입니다.");
     }
 
    /* public String findByNamePasswordEmailContact(String email, String name,String password, String contact, String newPassword) {
@@ -108,26 +104,27 @@ public class UserService{
 }
 
     public boolean verifyAndUpdatePassword(String name, String password, String email, String contact, String newPassword) {
-        QUserEntity user = QUserEntity.userEntity;
-        logger.info("QUserEntity = {}", user.toString());
+        logger.info("입력된 정보 - 이름: {}, 이메일: {}, 연락처: {}", name, email, contact);
 
-        // 모든 사용자를 가져옴
-        List<UserEntity> users = queryFactory.selectFrom(user).fetch();
-        logger.info("Fetched users = {}", users);
+        // 이름, 이메일, 연락처로 사용자 조회
+        Optional<UserEntity> optionalUser = userRepository.findByNameAndEmailAndContact(name, email, contact);
 
-        // 가져온 데이터를 바탕으로 이름과 비밀번호가 일치하는지 비교
-        for (UserEntity foundUser : users) {
-            logger.info("foundUser = {}", foundUser.toString());
-            if (foundUser.getName().equals(name) &&
-                    passwordEncoder.matches(password, foundUser.getPassword()) &&
-                    foundUser.getEmail().equals(email) &&
-                    foundUser.getContact().equals(contact)) {
+        if (optionalUser.isPresent()) {
+            UserEntity foundUser = optionalUser.get();
+            logger.info("조회된 사용자 정보: {}", foundUser);
+
+            // 비밀번호 일치 여부 확인
+            if (passwordEncoder.matches(password, foundUser.getPassword())) {
                 foundUser.setPassword(passwordEncoder.encode(newPassword));
                 userRepository.save(foundUser);
+                logger.info("비밀번호가 성공적으로 업데이트되었습니다.");
                 return true;
+            } else {
+                logger.error("비밀번호가 일치하지 않습니다.");
             }
+        } else {
+            logger.error("사용자 정보를 찾을 수 없습니다.");
         }
-        logger.error("사용자 정보를 찾을 수 없습니다.");
         return false;
     }
     // 다른 사용자 관련 기능들도 추가할 수 있음
