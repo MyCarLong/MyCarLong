@@ -49,8 +49,8 @@ public class FileServiceImpl implements FileService{
 	@Value("${CloudFrontURL}")
 	private String cdnUrl;
 
-	@Value("${uploadPath}")
-	private String uploadPath;
+//	@Value("${uploadPath}")
+//	private String uploadPath;
 
 //	@Operation(summary = "Upload a file")
 //	@ApiResponses({
@@ -143,6 +143,7 @@ public class FileServiceImpl implements FileService{
 			PutObjectResult putObjectResult = amazonS3.putObject(bucketName, savedFileName, multipartFile.getInputStream(),metadata);
 
 			String savedURL = amazonS3.getUrl(bucketName, originalFilename).toString(); // bucket에 저장된 이름으로 URL 반환
+
 			saveResponse.setFileUploadFullUrl(cdnUrl+savedFileName);
 			saveResponse.setPutObjectResult(putObjectResult);
 			//			amazonS3.putObject(bucketName, originalFilename, multipartFile.getInputStream(), metadata); //실제 파일 업로드

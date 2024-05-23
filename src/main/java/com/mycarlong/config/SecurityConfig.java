@@ -53,7 +53,9 @@ public class SecurityConfig {
 
         // 경로별 인가 작업
         http.authorizeHttpRequests(authorizeRequests -> authorizeRequests
-                                           .requestMatchers("/", "/aboutus", "/api/**", "/oauth/**").permitAll()
+                                           .requestMatchers("/", "/aboutus", "/api/**",
+                                                            "/oauth/**","/car/**","/image/**"
+                                                           ,"/loggedinserinfo", "/board/**","/isServerOn").permitAll()
                                            .anyRequest().hasRole("USER") // 나머지 요청은 인증된 사용자만 허용
                                   );
 
