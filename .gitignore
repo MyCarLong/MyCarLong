@@ -6,7 +6,7 @@
 HELP.md
 ReadMe.md
 
-#envRepo/
+envRepo/
 #application-aws.yml
 #application-board.yml
 #application-oauth.properties
@@ -88,4 +88,7 @@ venv/
 
 # properties
 oauthkey.properties
+application.yml
 src/main/generated/
+
+.env

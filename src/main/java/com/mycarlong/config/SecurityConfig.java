@@ -1,14 +1,18 @@
 package com.mycarlong.config;
 
-import java.util.Arrays;
-import java.util.Collections;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mycarlong.filter.JwtTokenFilter;
 import com.mycarlong.service.UserService;
+import com.mycarlong.config.JWTUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.web.OAuth2LoginAuthenticationFilter;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -16,9 +20,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import com.mycarlong.filter.JWTFilter;
-
-import jakarta.servlet.http.HttpServletRequest;
+import java.util.Arrays;
 
 @Configuration
 @EnableWebSecurity
@@ -27,42 +29,35 @@ public class SecurityConfig {
     private final UserService userService;
     private final CustomSuccessHandler customSuccessHandler;
     private final JWTUtil jwtUtil;
-    private final JWTFilter jwtFilter;
+    private final JwtTokenFilter jwtFilter;
+    private final ObjectMapper objectMapper;
 
-    public SecurityConfig(UserService userService, CustomSuccessHandler customSuccessHandler, JWTUtil jwtUtil, JWTFilter jwtFilter) {
+    private final PasswordEncoder passwordEncoder;
+
+    @Autowired
+    public SecurityConfig(UserService userService, CustomSuccessHandler customSuccessHandler,
+                          JWTUtil jwtUtil, JwtTokenFilter jwtFilter, ObjectMapper objectMapper, PasswordEncoder passwordEncoder, PasswordEncoder passwordEncoder1) {
         this.userService = userService;
         this.customSuccessHandler = customSuccessHandler;
         this.jwtUtil = jwtUtil;
         this.jwtFilter = jwtFilter;
+        this.objectMapper = objectMapper;
+        this.passwordEncoder = passwordEncoder1;
     }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        // CORS 설정
-        http.cors(corsCustomizer -> corsCustomizer.configurationSource(corsConfigurationSource()));
-
-        // CSRF 비활성화
-        http.csrf(csrf -> csrf.disable());
-
-        // HTTP Basic 인증 비활성화
-        http.httpBasic(httpBasic -> httpBasic.disable());
-
-        // JWT 필터 추가
-        http.addFilterAfter(new JWTFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
-        http.addFilterAfter(new JWTFilter(jwtUtil), OAuth2LoginAuthenticationFilter.class);
-
-        // 경로별 인가 작업
-        http.authorizeHttpRequests(authorizeRequests -> authorizeRequests
-                                           .requestMatchers("/", "/aboutus", "/api/**",
-                                                            "/oauth/**","/car/**","/image/**"
-                                                           ,"/loggedinserinfo", "/board/**","/isServerOn").permitAll()
-                                           .anyRequest().hasRole("USER") // 나머지 요청은 인증된 사용자만 허용
-                                  );
-
-        // 세션 관리 설정: STATELESS로 설정하여 세션을 사용하지 않습니다.
-        http.sessionManagement(sessionManagement -> sessionManagement
-                                       .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                              );
+        http
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .csrf(csrf -> csrf.disable())
+                .httpBasic(httpBasic -> httpBasic.disable())
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/", "/aboutus", "/api/**", "/oauth/**", "/car/**", "/image/**",
+                                "/loggedinserinfo", "/board/**", "/isServerOn").permitAll()
+                        .anyRequest().authenticated()
+                )
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
@@ -70,7 +65,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000", "http://mymcl.live","https://mymcl.live")); // 여러 도메인 추가
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000", "http://mymcl.live", "https://mymcl.live"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "X-Requested-With"));
         configuration.setExposedHeaders(Arrays.asList("Set-Cookie", "Authorization"));
@@ -81,4 +76,11 @@ public class SecurityConfig {
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
+
+    @Autowired
+    public void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(userService).passwordEncoder(passwordEncoder);
+    }
+
+
 }

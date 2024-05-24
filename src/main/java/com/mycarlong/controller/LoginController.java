@@ -1,21 +1,26 @@
 package com.mycarlong.controller;
 
+import com.mycarlong.config.JwtTokenProvider;
 import com.mycarlong.dto.LoginRequest;
-import com.mycarlong.entity.UserEntity;
 import com.mycarlong.repository.UserRepository;
+import com.mycarlong.service.UserService;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -34,12 +39,20 @@ public class LoginController {
     UserRepository userRepository;
 
     @Autowired
+    private JwtTokenProvider jwtTokenProvider;
+
+    @Autowired
+    private AuthenticationManagerBuilder authenticationManagerBuilder;
+
+    @Autowired
     private PasswordEncoder passwordEncoder;
     private Logger logger = LoggerFactory.getLogger(LoginController.class);
     @Value("${spring.jwt.secret}")
     private String jwtSecret;
+    @Autowired
+    private UserService userService;
 
-    @Operation(summary = "로그인", description = "사용자가 로그인을 합니다.")
+/*    @Operation(summary = "로그인", description = "사용자가 로그인을 합니다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "로그인 성공"),
             @ApiResponse(responseCode = "400", description = "이미 로그인되어 있습니다."),
@@ -71,6 +84,20 @@ public class LoginController {
                 }
             }
         }
+    }*/
+
+    @PostMapping("/api/login")
+    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
+        try {
+            // authenticateAndGenerateToken 메서드에서 사용자 정보를 함께 반환하도록 수정
+            UserDetails userDetails = userService.authenticateAndGenerateToken(loginRequest.getEmail(), loginRequest.getPassword());
+            String token = userService.generateToken(userDetails.getUsername(), userDetails.getAuthorities().toString());
+            String authority = userDetails.getAuthorities().stream().findFirst().get().toString();
+            log.info("authority {}", authority);
+            return ResponseEntity.status(HttpStatus.OK).body(new com.mycarlong.dto.ApiResponse(true, "로그인 성공", userDetails.getUsername(), token, authority));
+        } catch (UsernameNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("이메일이나 비밀번호가 올바르지 않습니다.");
+        }
     }
 
     @Operation(summary = "로그인된 사용자 정보", description = "로그인된 사용자의 이름을 반환합니다.")
@@ -79,10 +106,11 @@ public class LoginController {
     })
     @GetMapping("/loggedinserinfo")
     public ResponseEntity<?> getLoggenInUserName(@AuthenticationPrincipal Object principal) {
-        //        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+                Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        //        String loggedinUsername = authentication.getName();
-        Object loggedinUsername =  principal;
+                String loggedinUsername = authentication.getName();
+//        Object loggedinUsername =  principal;
+        logger.info("loggedinUsername {}", loggedinUsername);
         return new ResponseEntity<>(loggedinUsername,HttpStatus.OK);
     }
 

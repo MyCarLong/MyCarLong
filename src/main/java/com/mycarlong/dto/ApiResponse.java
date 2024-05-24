@@ -14,6 +14,7 @@ import lombok.Setter;
     private String message;
     private String name;
     private String token;
+    private String authority;
 
     public ApiResponse(boolean success, String message) {
       this.success = success;
@@ -25,11 +26,19 @@ import lombok.Setter;
       this.message = message;
       this.name = name;
     }
-    public ApiResponse(boolean success, String message,String name, String token){
+
+    public ApiResponse(boolean success, String message, String name,String token){
       this.success = success;
       this.message = message;
       this.name = name;
       this.token = token;
+    }
+    public ApiResponse(boolean success, String message,String name, String token,String authority){
+      this.success = success;
+      this.message = message;
+      this.name = name;
+      this.token = token;
+      this.authority = authority;
     }
     
 }

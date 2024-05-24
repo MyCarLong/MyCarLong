@@ -1,12 +1,11 @@
 package com.mycarlong.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.security.core.userdetails.User;
 
 @Entity
 @Getter
@@ -29,7 +28,9 @@ public class UserEntity {
     @NotBlank(message = "이메일을 입력해주세요.")
     private String email;
 
-    private String role;
+    @Enumerated(EnumType.STRING)
+    private UserRole role;
+
 
 
 }

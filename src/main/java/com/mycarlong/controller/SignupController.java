@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -66,12 +67,21 @@ public class SignupController {
         String name = signupRequest.getName();
         // 받아온 이름과 비밀번호를 DB와 비교 후 회원정보 일치시 OK 불일치시 BAD_REQUEST
         String comparePassword = userService.findByPassword(password,name);
-        if(comparePassword!=null){
-            return ResponseEntity.status(HttpStatus.OK).body("수정할 정보를 입력해주세요");
-        } else{
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("잘못된 비밀번호 입니다.");
-        }
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        String loggedinUsername = authentication.getName();
+        logger.info("loggedinUsername {}", loggedinUsername);
+//        Object loggedinUsername =  principal;
+        return new ResponseEntity<>(loggedinUsername,HttpStatus.OK);
+//        if(comparePassword!=null){
+//            return ResponseEntity.status(HttpStatus.OK).body("수정할 정보를 입력해주세요");
+//        } else{
+//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("잘못된 비밀번호 입니다.");
+//        }
     }
+
+
 
     @Operation(summary = "사용자 정보 수정", description = "사용자의 정보를 수정합니다.")
     @ApiResponses(value = {

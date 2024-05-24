@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.Iterator;
 
+import com.mycarlong.entity.UserRole;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
@@ -42,6 +43,8 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
 
 
+
+
         logger.info("customUserDetails!!!! : {}",customUserDetails);
         logger.info("customUserDetails . getName() !!!! : {}",customUserDetails.getName());
         logger.info("username!!!!{}", username);
@@ -51,12 +54,13 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         GrantedAuthority auth = iterator.next();
         String role = auth.getAuthority(); // 권한 획득
 
+        UserRole urole = UserRole.USER;
         // JWT 토큰 생성 (유효기간: 60시간)
-        String token = jwtUtil.createJwt(username, role, 1000 * 60 * 60L);
+        /*String token = jwtUtil.createJwt(username, urole, 1000 * 60 * 60L);*/
         String rfToken = jwtUtil.createRefreshToken(username, role, 1000 * 60 * 10 * 60L);
 
         // 생성된 JWT 토큰을 쿠키에 추가하여 클라이언트로 전달
-        response.addCookie(createCookie("Authorization", token));
+       /* response.addCookie(createCookie("Authorization", token));*/
         response.addCookie(createCookie("RefreshToken", rfToken));
 
 

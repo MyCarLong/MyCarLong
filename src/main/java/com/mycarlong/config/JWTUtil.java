@@ -1,6 +1,7 @@
 package com.mycarlong.config;
 
 
+import com.mycarlong.entity.UserRole;
 import io.jsonwebtoken.*;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
@@ -91,5 +92,15 @@ public class JWTUtil {
                 .expiration(new Date(System.currentTimeMillis() + expiredMs)) // 토큰 만료 시간을 설정합니다.
                 .signWith(secretKey) // 시크릿 키를 사용하여 토큰에 서명합니다.
                 .compact(); // 토큰을 생성하고 문자열로 반환합니다.
+    }
+
+    public Boolean validateToken(String token) {
+        try {
+            Jws<Claims> claimsJws = Jwts.parser().setSigningKey(secretKey).build().parseClaimsJws(token);
+            return !claimsJws.getPayload().getExpiration().before(new Date());
+        } catch (JwtException | IllegalArgumentException e) {
+            logger.error("Invalid JWT token.", e);
+            return false;
+        }
     }
 }

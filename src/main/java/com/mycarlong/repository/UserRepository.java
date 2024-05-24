@@ -12,6 +12,7 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<UserEntity, Long>, QuerydslPredicateExecutor<UserEntity> {
 
     UserEntity findByEmail(String email);
+//    Optional<UserEntity> findByUserName(String email);
     boolean existsByEmail(String email);
 
     UserEntity findByName(String name);
