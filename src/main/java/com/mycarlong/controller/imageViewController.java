@@ -16,6 +16,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
@@ -24,6 +25,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+
+@CrossOrigin(origins = "https://mymcl.live")
 @Controller
 @RequiredArgsConstructor
 public class imageViewController {
@@ -31,15 +34,16 @@ public class imageViewController {
 	private final ArticleImageServiceImpl articleImageService;
 	private Logger logger = LoggerFactory.getLogger(imageViewController.class);
 
+	//이미지 뷰는 CDN 서비스를 이용하기떄문에 환경변수를 통해 받아온다.
 	@Value("${CloudFrontURL}")
 	private String cloudFrontURL;
 
-
+    // 해당 엔드포인트는 이미지 URL을 반환한다
 	@GetMapping("/image/{fileName}")
 	public ResponseEntity<String> viewImageCloudFront(@PathVariable String fileName) {
 		logger.info("fileName : {}", fileName);
 
-//		ArticleImageDto foundImage = articleImageService.findImageByName(fileName);
+		//		ArticleImageDto foundImage = articleImageService.findImageByName(fileName);
 		ArticleImageDto foundImage = articleImageService.findImageByName(fileName);
 		if (foundImage.getImageSavedPath() == null)
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -58,39 +62,6 @@ public class imageViewController {
 		}
 		return new ResponseEntity<>(imgUrl, HttpStatus.OK);
 
-		//		Resource resource = new FileSystemResource(foundImage.getImageSavedPath());
-		//		if (!resource.exists())
-		//			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-		//
-		//		HttpHeaders header = new HttpHeaders();
-		//		Path filePath = null;
-		//		try {
-		//			filePath = Paths.get(fileName);
-		//			header.add("Content-Type", Files.probeContentType(filePath));
-		//		} catch (IOException e) {
-		//			throw new DataMismatchException("filePath를 구할 수 없습니다.", null);
-		//		}
-		//
-		//		return new ResponseEntity<Resource>(resource, header, HttpStatus.OK);
 	}
-	//	}@GetMapping("/image/{fileName}")
-	//	public ResponseEntity<Resource> viewImage(@PathVariable String fileName) {
-	//		logger.info("fileName : {}", fileName);
-	//
-	//		ArticleImageDto foundImage = articleImageService.findImageByName(fileName);
-	//		Resource resource = new FileSystemResource(foundImage.getImageSavedPath());
-	//		if (!resource.exists())
-	//			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-	//
-	//		HttpHeaders header = new HttpHeaders();
-	//		Path filePath = null;
-	//		try{
-	//			filePath =  Paths.get(fileName);
-	//			header.add("Content-Type" , Files.probeContentType(filePath));
-	//		} catch (IOException e) {
-	//			throw new DataMismatchException("filePath를 구할 수 없습니다.", null);
-	//		}
-	//
-	//		return new ResponseEntity<Resource>(resource, header , HttpStatus.OK);
-	//	}
+
 }

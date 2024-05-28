@@ -16,20 +16,13 @@ configurations {
 		extendsFrom annotationProcessor
 	}
 }
-task copyPrivate(type: Copy) {
-	copy {
-		from './envRepo' //위 사진과 같은 폴더 명
-		include "*.yml" //위 폴더안에 있는 yml파일 명
-		include "*.properties" //위 폴더안에 있는 yml파일 명
-		into 'src/main/resources' //복사할 위치
-	}
-}
+
 repositories {
 	mavenCentral()
 }
 
 dependencies {
-// Spring Boot Starter
+	// Spring Boot Starter
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
@@ -38,24 +31,16 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-webflux'
 	implementation 'org.springframework.boot:spring-boot-configuration-processor'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
-
-// Thymeleaf
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
-	implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect:3.3.0'
-
-	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6:3.1.2.RELEASE'
 	implementation 'org.springframework.boot:spring-boot-starter'
 	implementation 'org.springframework.boot:spring-boot-starter-logging'
+	// https://mvnrepository.com/artifact/jakarta.persistence/jakarta.persistence-api
 
-	//Swagger
+
+	// Swagger
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.4'
 
-
-	implementation 'org.springframework.boot:spring-boot-starter-validation'
-	testImplementation 'org.springframework.security:spring-security-test:6.2.3'
-
-	implementation 'org.springframework.boot:spring-boot-starter-cache'
-	// https://mvnrepository.com/artifact/org.apache.tika/tika-core
+	// Tika
 	implementation group: 'org.apache.tika', name: 'tika-core', version: '2.9.1'
 
 	// Lombok
@@ -63,26 +48,25 @@ dependencies {
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 
-// Database Connector
+	// Database Connector
 	runtimeOnly 'com.mysql:mysql-connector-j'
 
-// Test
+	// Test
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testImplementation 'org.springframework.security:spring-security-test'
+	testImplementation 'org.springframework.security:spring-security-test:6.2.3'
 	testImplementation 'io.rest-assured:rest-assured:5.3.0'
 
-// Model Mapper
+	// Model Mapper
 	implementation 'org.modelmapper:modelmapper:3.2.0'
 
-// QueryDSL
+	// QueryDSL
 	implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
 	annotationProcessor "com.querydsl:querydsl-apt:5.0.0:jakarta"
 	annotationProcessor "jakarta.annotation:jakarta.annotation-api"
 	annotationProcessor "jakarta.persistence:jakarta.persistence-api"
 
-// Jsoup
+	// Jsoup
 	implementation group: 'org.jsoup', name: 'jsoup', version: '1.17.2'
-
 
 	// Selenium
 	implementation 'org.seleniumhq.selenium:selenium-java:4.20.0'
@@ -103,54 +87,50 @@ dependencies {
 	implementation 'org.seleniumhq.selenium:selenium-remote-driver:4.20.0'
 	implementation 'org.seleniumhq.selenium:selenium-safari-driver:4.20.0'
 	implementation 'org.seleniumhq.selenium:selenium-support:4.20.0'
-// WebDriverManager
+
+	// WebDriverManager
 	implementation group: 'io.github.bonigarcia', name: 'webdrivermanager', version: '5.8.0'
 
-// JSON Simple
+	// JSON Simple
 	implementation group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1.1'
 
-// Hibernate Validator
+	// Hibernate Validator
 	implementation 'org.hibernate.validator:hibernate-validator'
 
-// JWT
+	// JWT
 	implementation 'com.auth0:java-jwt:3.18.2'
 	implementation 'io.jsonwebtoken:jjwt-api:0.12.3'
 	implementation 'io.jsonwebtoken:jjwt-impl:0.12.3'
 	implementation 'io.jsonwebtoken:jjwt-jackson:0.12.3'
 
-// Gson
+	// Gson
 	implementation 'com.google.code.gson:gson:2.8.9'
 
-// Configuration Properties
+	// Configuration Properties
 	annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 
-
-	// https://mvnrepository.com/artifact/org.modelmapper/modelmapper
-	implementation group: 'org.modelmapper', name: 'modelmapper', version: '3.1.0'
-	// https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-aws
+	// Spring Cloud AWS
 	implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-aws', version: '2.2.6.RELEASE'
-	implementation 'javax.xml.bind:jaxb-api:2.3.1'
 
-
-	/*Use by KGH*/
-	implementation 'org.apache.tika:tika-parsers:1.17' //file validation
-	// https://mvnrepository.com/artifact/com.amazonaws/aws-java-sdk-s3
-//	implementation group: 'com.amazonaws', name: 'aws-java-sdk-s3', version: '1.12.720'// AWS S3 Multipart File upload
-
-
-	/*End of Use by KGH*/
-
-
-	/*Use by HDW*/
-	//예시	implementation 'org.apache.tika:tika-parsers:1.17'
-	/*End of Use by HDW*/
-
-
+	// Tika Parsers
+	implementation 'org.apache.tika:tika-parsers:1.17' // file validation
 }
 
-tasks.named('test') {
-	useJUnitPlatform()
+// QueryDSL 설정
+def generated = 'src/main/generated'
+tasks.withType(JavaCompile) {
+	options.annotationProcessorGeneratedSourcesDirectory = file(generated)
 }
+
+// compileJava 작업에 생성된 소스 포함
 tasks.named('compileJava') {
 	inputs.files(tasks.named('processResources'))
+	doFirst {
+		sourceSets.main.java.srcDirs += generated
+	}
+}
+
+// QueryDSL 작업이 컴파일 전에 실행되도록 보장
+tasks.named('compileJava').configure {
+	dependsOn(tasks.named('processResources'))
 }

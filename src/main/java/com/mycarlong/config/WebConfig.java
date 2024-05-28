@@ -22,23 +22,39 @@ public class WebConfig implements WebMvcConfigurer {
         return new BCryptPasswordEncoder();
     }
 
-    @Override
-    public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**")
-                .allowedOrigins("http://localhost:3000")
-                .allowedMethods(
-                        HttpMethod.GET.name(),
-                        HttpMethod.POST.name(),
-                        HttpMethod.PUT.name(),
-                        HttpMethod.DELETE.name(),
-                        HttpMethod.PATCH.name()
-                )
-                .allowCredentials(true)
-                .exposedHeaders("*");
-    }
+
+	@Override
+	public void addCorsMappings(CorsRegistry registry) {
+		registry.addMapping("/**")
+				.allowedOrigins(
+						"https://openapi.naver.com/v1/nid/me",
+						"https://openapi.naver.com/**",
+						"https://nid.naver.com/oauth2.0/token",
+						"https://nid.naver.com/**",
+						"https://*.naver.com/**",
+						"https://www.googleapis.com/userinfo/v2/me",
+						"https://www.googleapis.com/**",
+						"https://*.googleapis.com/**",
+						"https://oauth2.googleapis.com/**",
+						"https://kapi.kakao.com/v2/user/me",
+						"https://kapi.kakao.com/**",
+						"https://*.kakao.com/**",
+						"https://kauth.kakao.com/oauth/token",
+						"https://kauth.kakao.com/**",
+						"https://*.kakao.com/**",
+						"http://localhost:3000", "http://localhost:3008",
+						"http://mymcl.live", "https://mymcl.live",
+						"https://www.mymcl.live")
+				.allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+				.allowedHeaders("Authorization", "Content-Type", "X-Requested-With")
+				.exposedHeaders("Set-Cookie", "Authorization")
+				.allowCredentials(true)
+				.maxAge(3600L);
+	}
 
     @Override
     public void addFormatters(FormatterRegistry registry) {
         registry.addConverter(new OauthServerTypeConverter());
     }
 }
+

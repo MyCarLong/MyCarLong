@@ -33,45 +33,46 @@ public class ArticleImageServiceImpl implements ArticleImageService {
 	private final FileServiceImpl fileService;
 
 	private Logger logger = LoggerFactory.getLogger(ArticleImageServiceImpl.class);
-	@Override
-	public String saveArticleImg(Article article, String fileIndex, MultipartFile articleImgFile) {
 
-		try {
-			String imageOriginName = articleImgFile.getOriginalFilename();
-			String imageSavedName = "";
-			String imageSavedPath = "";
-
-			//파일 업로드
-			if(imageOriginName != null){
-				ResponseEntity<?> imgSaveResult = fileService.uploadFile(article.getTitle(), article.getAuthor(),fileIndex,
-																   articleImgFile.getOriginalFilename(),
-				                                                   articleImgFile.getBytes());
-				if (imgSaveResult.getBody() instanceof FileSaveResponse) {
-					FileSaveResponse temp  = (FileSaveResponse) imgSaveResult.getBody();
-					imageSavedName = temp.getFileSavedName();
-					imageSavedPath = temp.getFileUploadFullUrl();
-					String fileExtension = temp.getFileExtension();
-					log.info("imageSavedName: {} \n imageSavedPath: {} ",imageSavedName, imageSavedPath);
-
-					ArticleImage articleImg = ArticleImage.builder()
-							.imageOriginName(imageOriginName)
-							.imageSavedName(imageSavedName)
-							.imageSavedPath(imageSavedPath)
-							.imageSetNum(Integer.parseInt(fileIndex))
-							.article(article)
-							.fileExtension(fileExtension)
-							.build();
-
-					articleImageRepository.save(articleImg);
-					return imageSavedPath;
-				}
-			}
-
-		} catch (Exception e) {
-			log.warn(e.getMessage());
-		}
-		return "error";
-	}
+//	@Override
+//	public String saveArticleImg(Article article, String fileIndex, MultipartFile articleImgFile) {
+//
+//		try {
+//			String imageOriginName = articleImgFile.getOriginalFilename();
+//			String imageSavedName = "";
+//			String imageSavedPath = "";
+//
+//			//파일 업로드
+//			if(imageOriginName != null){
+//				ResponseEntity<?> imgSaveResult = fileService.uploadToS3(article.getTitle(), article.getAuthor(),fileIndex,
+//				                                                         articleImgFile.getOriginalFilename(),
+//				                                                         articleImgFile.getBytes());
+//				if (imgSaveResult.getBody() instanceof FileSaveResponse) {
+//					FileSaveResponse temp  = (FileSaveResponse) imgSaveResult.getBody();
+//					imageSavedName = temp.getFileSavedName();
+//					imageSavedPath = temp.getFileUploadFullUrl();
+//					String fileExtension = temp.getFileExtension();
+//					log.info("imageSavedName: {} \n imageSavedPath: {} ",imageSavedName, imageSavedPath);
+//
+//					ArticleImage articleImg = ArticleImage.builder()
+//							.imageOriginName(imageOriginName)
+//							.imageSavedName(imageSavedName)
+//							.imageSavedPath(imageSavedPath)
+//							.imageSetNum(Integer.parseInt(fileIndex))
+//							.article(article)
+//							.fileExtension(fileExtension)
+//							.build();
+//
+//					articleImageRepository.save(articleImg);
+//					return imageSavedPath;
+//				}
+//			}
+//
+//		} catch (Exception e) {
+//			log.warn(e.getMessage());
+//		}
+//		return "error";
+//	}
 
 	@Override
 	public String saveArticleImgS3(Article article, String fileIndex, MultipartFile articleImgFile) {
@@ -112,106 +113,50 @@ public class ArticleImageServiceImpl implements ArticleImageService {
 		}
 		return "error";
 	}
-
-
-		@Override
-		public String updateItemImg(Article article, String fileIndex, MultipartFile articleImgFile) throws Exception {
-			try {
-					if (!articleImgFile.isEmpty()) {
-						Long articleImgId = article.getArticleImageList().get(Integer.parseInt(fileIndex)).getId();
-						ArticleImage savedArticleImg = articleImageRepository.findById(articleImgId)
-								.orElseThrow(EntityNotFoundException::new);
-
-						if (!StringUtils.isEmpty(savedArticleImg.getImageSavedPath())) {
-							fileService.deleteFile(articleImgLocation + "/" +
-									                           savedArticleImg.getImageSavedName());
-						}
-
-						String oriImgName = articleImgFile.getOriginalFilename();
-						ResponseEntity<?> imgSaveResult = fileService.uploadFile(article.getTitle(), article.getAuthor(),fileIndex,
-						                                        articleImgFile.getOriginalFilename(),
-						                                        articleImgFile.getBytes());
-						if (imgSaveResult.getBody() instanceof FileSaveResponse) {
-							FileSaveResponse temp  = (FileSaveResponse) imgSaveResult.getBody();
-							String imageSavedName = temp.getFileSavedName();
-							String imageSavedPath = temp.getFileUploadFullUrl();
-							String fileExtension = temp.getFileExtension();
-							//log.info("imageSavedName: {} \n imageSavedPath: {} ",imageSavedName, imageSavedPath);
-							savedArticleImg.updateArticleImg(oriImgName, imageSavedName, imageSavedPath,fileExtension);
-						}
-
-
-					}
-
-			} catch (Exception e) {
-				log.warn(e.getMessage());
-			}
-			return fileIndex;
-		}
-
-		/**
-		 * return File saved Name
-		 * */
-		@Override
-		public ArticleImageDto findImageByName(String imageSavedName) {
-			ArticleImage image = articleImageRepository.findByImageSavedName(imageSavedName);
-			return ArticleImageDto.of(image);
-		}
-
-
-	//		public ResponseEntity<FileSaveResponse> saveTest (ArticleFormDto articleFormDto)  throws IOException
-//		{ //ArticleImage articleImg, MultipartFile articleImgFileList) throws IOException {
-//
-//			try {
-//				String imageOriginName = articleFormDto.getArticleImgList().get(0).getOriginalFilename();
-//				String imageSavedName = "";
-//				String imageSavedPath = "";
-//				MultipartFile articleImgFile = articleFormDto.getArticleImgList().get(0);
-//				String fileIndex = String.valueOf(articleFormDto.getArticleImgList().indexOf(articleImgFile));
 //
 //
-//				if (!StringUtils.isEmpty(imageOriginName)) {
-//					imageSavedName = fileService.uploadFile(articleFormDto.getTitle(), articleFormDto.getAuthor(),
-//					                                        fileIndex,
-//					                                        imageOriginName, articleImgFile.getBytes()
-//					                                       );
-//					imageSavedPath = "/images/article/" + imageSavedName;
+//	@Override
+//	public String updateItemImg(Article article, String fileIndex, MultipartFile articleImgFile) throws Exception {
+//		try {
+//			if (!articleImgFile.isEmpty()) {
+//				Long articleImgId = article.getArticleImageList().get(Integer.parseInt(fileIndex)).getId();
+//				ArticleImage savedArticleImg = articleImageRepository.findById(articleImgId)
+//						.orElseThrow(EntityNotFoundException::new);
+//
+//				if (!StringUtils.isEmpty(savedArticleImg.getImageSavedPath())) {
+//					fileService.deleteFile(articleImgLocation + "/" +
+//							                       savedArticleImg.getImageSavedName());
 //				}
-//				//상품 이미지 정보 저장
-//				//				articleImg.updateArticleImg(imageOriginName, imageSavedName, imageSavedPath);
-//				ArticleImage articleImg = ArticleImage.builder()
-//						.imageOriginName(imageOriginName)
-//						.imageSavedName(imageSavedName)
-//						.imageSavedPath(imageSavedPath)
-//						.build();
-//				articleImageRepository.save(articleImg);
-//				logger.info("게시글 이미지 저장성공");
-//				articleFormDto.setProcessed(true);
 //
-//				FileSaveResponse fileSaveResponse = FileSaveResponse.builder()
-//						.fileName(imageOriginName)
-//						.fileSavedName(imageSavedName)
-//						.savedUserName(articleFormDto.getAuthor())
-//						.associatedArticleTitle(articleFormDto.getTitle())
-//						.build();
+//				String oriImgName = articleImgFile.getOriginalFilename();
+//				ResponseEntity<?> imgSaveResult = fileService.uploadToS3(article.getTitle(), article.getAuthor(),fileIndex,
+//				                                                         articleImgFile.getOriginalFilename(),
+//				                                                         articleImgFile.getBytes());
+//				if (imgSaveResult.getBody() instanceof FileSaveResponse) {
+//					FileSaveResponse temp  = (FileSaveResponse) imgSaveResult.getBody();
+//					String imageSavedName = temp.getFileSavedName();
+//					String imageSavedPath = temp.getFileUploadFullUrl();
+//					String fileExtension = temp.getFileExtension();
+//					//log.info("imageSavedName: {} \n imageSavedPath: {} ",imageSavedName, imageSavedPath);
+//					savedArticleImg.updateArticleImg(oriImgName, imageSavedName, imageSavedPath,fileExtension);
+//				}
 //
-//				return ResponseEntity.status(HttpStatus.OK).body(fileSaveResponse);
-//			} catch (Exception e) {
-//				logger.warn(e.getMessage());
+//
 //			}
-//			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
+//
+//		} catch (Exception e) {
+//			log.warn(e.getMessage());
 //		}
+//		return fileIndex;
+//	}
 
-		//	public void testImgUpload(MultipartFile articleImgFile) throws IOException {
-		//		String imageOriginName = articleImgFile.getOriginalFilename();
-		//		String imageSavedName = "";
-		//		String imageSavedPath = "";
-		//
-		////		imageSavedName = fileServiceImpl.uploadFile(articleImgLocation, imageOriginName,
-		////		                                            articleImgFile.getBytes());
-		//		imageSavedPath = "/images/article/" + imageSavedName;
-		//		fileServiceImpl.uploadFile(imageOriginName, articleImgFile.getBytes());
-		//	}
-
-
+	/**
+	 * return File saved Name
+	 * */
+	@Override
+	public ArticleImageDto findImageByName(String imageSavedName) {
+		ArticleImage image = articleImageRepository.findByImageSavedName(imageSavedName);
+		return ArticleImageDto.of(image);
 	}
+
+}

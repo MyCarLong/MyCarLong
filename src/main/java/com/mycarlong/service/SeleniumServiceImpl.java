@@ -38,7 +38,7 @@ public class SeleniumServiceImpl extends CustomException implements SeleniumServ
 	private Logger logger = LoggerFactory.getLogger(SeleniumServiceImpl.class);
 	private static final String DEFAULT_SEARCH_URL = "https://search.naver.com/search" +
 			".naver?where=nexearch&sm=top_hty&fbm=0&ie=utf8&query=";  // 네이버 검색 기본 URL을 잡는다.
-	private static final Duration WAIT_DURATION = Duration.ofMillis(1000);
+	private static final Duration WAIT_DURATION = Duration.ofMillis(5000);
 
 	private final WebDriverService webDriverService;
 
@@ -54,14 +54,11 @@ public class SeleniumServiceImpl extends CustomException implements SeleniumServ
 			String errMsg = null;
 			// 웹 페이지에 연결
 			driver.get(generated.get("targetURL"));
-			WebDriverWait wait = new WebDriverWait(driver,WAIT_DURATION);
-			//			// CSS 선택자를 사용하여 요소 대기
-			//			WebElement element = wait.until(
-			//					ExpectedConditions.visibilityOfElementLocated(
-			//							By.cssSelector("li.item._item[data-id='1'][data-no='1']")));
+			WebDriverWait wait = new WebDriverWait(driver,WAIT_DURATION); //페이지 로딩 대기처리를 위한 객체
+			//엘리먼트가 위치할때까지 설정한 대기시간만큼 기다린다.
 			WebElement element = wait.until(ExpectedConditions.presenceOfElementLocated(
 					By.cssSelector("ul.grid_box._exterior._list >li.item._item[data-img-url][data-id='1']")));
-			if (element == null) {
+			if (element == null) { //요소를 찾지 못했다면 페이지로딩 타임아웃 예외 처리
 				throw new PageLoadTimeoutException("Photo Box Element Not Found");
 			}
 			// 요소에서 data-img-url 속성 값 가져오기
@@ -145,13 +142,14 @@ public class SeleniumServiceImpl extends CustomException implements SeleniumServ
 	 */
 	@Override
 	public CarInfoDto  mappingToJson(String year, String model) {
-		WebDriver driver = webDriverService.getDriver();
+		WebDriver driver = webDriverService.getDriver();  //웹드라이버 웹드라이버 실행
 		//			Map<String , Object> beforeConv = new HashMap<>();
-		Map<String , String> parametersInfo = new LinkedHashMap<>();
+		Map<String , String> parametersInfo = new LinkedHashMap<>(); //요청받은 파라미터 정보를 맵 객체에 넣는다
 		parametersInfo.put("year", year);
 		parametersInfo.put("model", model);
 		CarInfoDto carInfoDto = new CarInfoDto();
 
+		//진행 전 입력들에 대한 유효성 검증을 실시한다.
 		if (!regularExp(year, model)) {  //사용자 입력이 정규식 필터링에 문제업는 정상입력이 아니라면
 			carInfoDto.setInformation(Map.of("ErrorInfomation", "Please Input Correct Parameters . . "));
 			carInfoDto.setParameters(parametersInfo);
@@ -161,9 +159,10 @@ public class SeleniumServiceImpl extends CustomException implements SeleniumServ
 			throw new ParameterNotFoundException("Null Parameter Input Error");
 		}
 
+		//입력받은 요청에대해 이상 없다면
 		try {
-			Map<String, String> getPhoto = photoGet(year, model , driver);
-			Map<String , String> getInfo = infomationGet(year , model ,driver);
+			Map<String, String> getPhoto = photoGet(year, model , driver);  //사진 URL 획득 메서드 실행
+			Map<String , String> getInfo = infomationGet(year , model ,driver); // 차량정보 획득 메서드 실행
 			if(getPhoto != null) { //정상응답이라 판단
 				//					beforeConv.put("status", 200);
 				//					beforeConv.put("Information", getInfo);
@@ -175,7 +174,7 @@ public class SeleniumServiceImpl extends CustomException implements SeleniumServ
 				//					beforeConv.put("Information", "Box Miss Matching to Parameter Model...");
 				throw new TargetNotFoundException("Box Miss Matching to Parameter Model...");
 
-			}else if (getPhoto.get("imgURL").equals("Info: Img URL not found")) {
+			}else if (getPhoto.get("imgURL").equals("Info: Img URL not found")) { //imgURL 서칭 결과 못찾았을 경우
 				//					beforeConv.put("status", 404);
 				//					beforeConv.put("Information", "Cannot Found ImageURL");
 				throw new ElementNotFoundException("Getting Photo URL logic failed");

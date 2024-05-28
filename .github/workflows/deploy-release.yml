@@ -1,0 +1,74 @@
+name: Deploy to cloudtype
+on:
+  push:
+    branches:
+      - release
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Connect deploy key
+        uses: cloudtype-github-actions/connect@v1
+        with:
+          token: ${{ secrets.CLOUDTYPE_TOKEN }}
+          ghtoken: ${{ secrets.GHP_TOKEN }}
+      - name: Deploy
+        uses: cloudtype-github-actions/deploy@v1
+        with:
+          token: ${{ secrets.CLOUDTYPE_TOKEN }}
+          project: kascald/kasclad-repository
+          stage: main
+          yaml: |
+            name: mycarlongdocker
+            app: dockerfile@
+            options:
+              ports: "8097"
+              dockerfile: Dockerfile
+              env:
+                - name: PROFILE
+                  value: deployTest
+                - name: MySQL_URL
+                  secret: MySQL_URL
+                - name: MySQL_PW
+                  secret: MySQL_PW
+                - name: SpringJWT
+                  secret: SpringJWT
+                - name: Naver_ClientID
+                  secret: Naver_ClientID
+                - name: Naver_Secret
+                  secret: Naver_Secret
+                - name: Google_ClientID
+                  secret: Google_ClientID
+                - name: Google_Secret
+                  secret: Google_Secret
+                - name: Kakao_ClientID
+                  secret: Kakao_ClientID
+                - name: Kakao_Secret
+                  secret: Kakao_Secret
+                - name: S3_AccessKey
+                  secret: S3_AccessKey
+                - name: S3_SecretKey
+                  secret: S3_SecretKey
+                - name: S3_BucketName
+                  secret: S3_BucketName
+                - name: S3_Region
+                  secret: S3_Region
+                - name: CloudFrontURL
+                  secret: CloudFrontURL
+                - name: FrontServer
+                  secret: FrontServer
+                - name: FrontServerIp
+                  secret: FrontServerIp
+                - name: GOOGLE_RE
+                  secret: Google_redirectURL
+                - name: NAVER_RE
+                  secret: Naver_redirectURL
+                - name: KAKAO_RE
+                  secret: Kakao_redirectURL
+            context:
+              git:
+                url: git@github.com:${{ github.repository }}.git
+                ref: ${{ github.ref }}
+              preset: dockerfile-java

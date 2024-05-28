@@ -55,4 +55,5 @@ ENV FrontServerIp ${FrontServerIp}
 
 EXPOSE 8097
 COPY --from=build /home/gradle/src/build/libs/*.jar /app.jar
-ENTRYPOINT ["java","-Dspring.profiles.active=${PROFILE}","-jar","/app.jar"]
+ENTRYPOINT ["java","-Xms128m","-Xmx512m","-Dspring.profiles.active=${PROFILE}","-jar","/app.jar"]
+

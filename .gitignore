@@ -70,6 +70,10 @@ logs/
 ~/.intellijidea/
 .idea/workspace.xml
 .idea/caches/
+application-localTest.yml
+application-aws-localTest.yml
+application-board-localTest.yml
+application-oauth-localTest.properties
 
 # 빌드 파일
 target/*.jar
@@ -88,5 +92,4 @@ venv/
 
 # properties
 oauthkey.properties
-
-src/main/resources/envRepo/
+src/main/generated/

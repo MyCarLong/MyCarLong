@@ -27,7 +27,7 @@ spring:
           time_zone: Asia/Seoul
     database-platform: org.hibernate.dialect.MySQL8Dialect
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
   datasource: # RDS 연동시 수정해야함

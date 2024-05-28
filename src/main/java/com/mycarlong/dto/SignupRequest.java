@@ -38,4 +38,13 @@ public class SignupRequest {
     return confirmPassword.equals(password); // 비밀번호 확인 필드가 일치하는지 확인
   }
 
+  @Override
+  public String toString() {
+    return "SignupRequest{" +
+            "email='" + email + '\'' +
+            ", name='" + name + '\'' +
+            ", contact='" + contact + '\'' +
+            '}';
+  }
+
 }
