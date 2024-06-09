@@ -17,7 +17,9 @@ MyCarLong은 Spring Boot 프레임워크와 React 라이브러리를 기반으�
 - **Frontend:** React, TypeScript, JavaScript
 - **Deploy:** AWS (EC2, S3) , Docker, Git Actions
 
-![Stacks_Image](https://github.com/MyCarLong/MyCarLong/assets/118609415/c55ee09d-83d3-4957-a689-b2d9cf670e44)
+![Stack_Image](https://github.com/MyCarLong/MyCarLong/assets/118609415/c868ff3e-9fd9-4587-8543-f0ddd0b987b3)
+
+
 
 <!--
 ---
